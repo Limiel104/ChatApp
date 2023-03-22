@@ -6,8 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.ui.theme.ChatAppTheme
+import com.example.chatapp.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,7 +25,32 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LoginScreen()
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.LoginScreen.route
+                    ) {
+                        composable(
+                            route = Screen.LoginScreen.route
+                        ) {
+                            LoginScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.SignupScreen.route
+                        ) {
+                            SignupScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.UserListScreen.route
+                        ) {
+                            UserListScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.ChatScreen.route
+                        ) {
+                            ChatScreen(navController = navController)
+                        }
+                    }
                 }
             }
         }

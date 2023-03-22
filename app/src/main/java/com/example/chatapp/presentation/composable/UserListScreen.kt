@@ -11,10 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 
-@Preview
+//@Preview
 @Composable
-fun UserListScreen() {
+fun UserListScreen(
+    navController: NavController
+) {
 
     val userList = listOf(
         "John Smith",
