@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 
 @Preview
 @Composable
-fun SignUpScreen() {
+fun SignupScreen() {
 
     val login = ""
     val password = ""

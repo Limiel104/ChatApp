@@ -1,4 +1,4 @@
-package com.example.chatapp
+package com.example.chatapp.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -6,9 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Modifier
-import com.example.chatapp.presentation.composable.ChatScreen
-import com.example.chatapp.presentation.composable.LoginScreen
-import com.example.chatapp.presentation.composable.TransparentSystemBar
+import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.ui.theme.ChatAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +19,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ChatScreen()
+                    LoginScreen()
                 }
             }
         }
