@@ -8,7 +8,9 @@ import androidx.compose.material.*
 import androidx.compose.ui.Modifier
 import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.ui.theme.ChatAppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
