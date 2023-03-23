@@ -1,7 +1,10 @@
 package com.example.chatapp.util
 
-sealed class Resource<out T> {
-    data class Success<out T>(val result: T): Resource<T>()
-    data class Failure(val exception: Exception): Resource<Nothing>()
-    object Loading: Resource<Nothing>()
+sealed class Resource<T>(
+    val data: T? = null,
+    val message: String? = null
+) {
+    class Success<T>(data: T?): Resource<T>(data)
+    class Error<T>(message: String, data: T? = null): Resource<T>(data, message)
+    class Loading<T>(val isLoading: Boolean = true): Resource<T>(null)
 }
