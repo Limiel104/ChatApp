@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation.login
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -36,17 +37,13 @@ class LoginViewModel @Inject constructor(
                 )
             }
             is LoginEvent.Login -> {
-                viewModelScope.launch {
                     val isValidationSuccessful = validateEmailAndPassword()
                     if (isValidationSuccessful) {
                         login(_loginSate.value.email, _loginSate.value.password)
-                        when (_loginSate.value.loginResponse) {
-                            is Resource.Success -> {
-                                _eventFlow.emit(LoginUiEvent.Login)
-                            }
-                        }
                     }
-                }
+                    else {
+                        Log.i("TAG","Invalid login credentials")
+                    }
             }
         }
     }
@@ -59,6 +56,18 @@ class LoginViewModel @Inject constructor(
             _loginSate.value = loginState.value.copy(
                 loginResponse = authenticationRepository.login(email,password)
             )
+
+            when (_loginSate.value.loginResponse) {
+                is Resource.Success -> {
+                    _eventFlow.emit(LoginUiEvent.Login)
+                }
+                is Resource.Error -> {
+                    Log.i("TAG","Login Error")
+                }
+                else -> {
+                    Log.i("TAG","Loading...")
+                }
+            }
         }
     }
 

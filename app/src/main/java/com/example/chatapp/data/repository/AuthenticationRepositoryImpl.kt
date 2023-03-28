@@ -24,7 +24,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
         }
         catch (e: Exception) {
             e.printStackTrace()
-            Resource.Error(e.localizedMessage!!)
+            Resource.Error(e)
         }
     }
 
@@ -42,7 +42,7 @@ class AuthenticationRepositoryImpl @Inject constructor(
         }
         catch (e: Exception) {
             e.printStackTrace()
-            Resource.Error(e.localizedMessage!!)
+            Resource.Error(e)
         }
     }
 

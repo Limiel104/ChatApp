@@ -21,6 +21,8 @@ import com.example.chatapp.presentation.login.LoginUiEvent
 import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
+import com.example.chatapp.util.Resource
+import com.example.chatapp.util.Screen
 
 //@Preview
 @Composable
@@ -30,13 +32,16 @@ fun LoginScreen(
 ) {
     val login = viewModel.loginState.value.email
     val password = viewModel.loginState.value.password
-    val t = viewModel.loginState.value.loginResponse
+    val loginResponse = viewModel.loginState.value.loginResponse
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
                 is LoginUiEvent.Login -> {
                     Log.i("TAG","Logged in successfully")
+                    navController.navigate(Screen.UserListScreen.route) {
+                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                    }
                 }
             }
         }
@@ -110,8 +115,19 @@ fun LoginScreen(
                 color = Color.Blue,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
-                    .clickable { /*TODO*/ }
+                    .clickable {
+                        navController.navigate(Screen.SignupScreen.route)
+                    }
             )
+        }
+    }
+
+    if(loginResponse == Resource.Loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     }
 }
