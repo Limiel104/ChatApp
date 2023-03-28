@@ -18,8 +18,8 @@ class LoginViewModel @Inject constructor(
     private val authenticationRepository: AuthenticationRepository
 ): ViewModel() {
 
-    private val _loginSate = mutableStateOf(LoginState())
-    val loginState: State<LoginState> = _loginSate
+    private val _loginState = mutableStateOf(LoginState())
+    val loginState: State<LoginState> = _loginState
 
     private val _eventFlow = MutableSharedFlow<LoginUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -27,19 +27,19 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginEvent) {
         when(event) {
             is LoginEvent.EnteredEmail -> {
-                _loginSate.value = loginState.value.copy(
+                _loginState.value = loginState.value.copy(
                     email = event.value
                 )
             }
             is LoginEvent.EnteredPassword -> {
-                _loginSate.value = loginState.value.copy(
+                _loginState.value = loginState.value.copy(
                     password = event.value
                 )
             }
             is LoginEvent.Login -> {
                     val isValidationSuccessful = validateEmailAndPassword()
                     if (isValidationSuccessful) {
-                        login(_loginSate.value.email, _loginSate.value.password)
+                        login(_loginState.value.email, _loginState.value.password)
                     }
                     else {
                         Log.i("TAG","Invalid login credentials")
@@ -50,14 +50,14 @@ class LoginViewModel @Inject constructor(
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _loginSate.value = loginState.value.copy(
+            _loginState.value = loginState.value.copy(
                 loginResponse = Resource.Loading
             )
-            _loginSate.value = loginState.value.copy(
+            _loginState.value = loginState.value.copy(
                 loginResponse = authenticationRepository.login(email,password)
             )
 
-            when (_loginSate.value.loginResponse) {
+            when (_loginState.value.loginResponse) {
                 is Resource.Success -> {
                     _eventFlow.emit(LoginUiEvent.Login)
                 }
@@ -72,6 +72,6 @@ class LoginViewModel @Inject constructor(
     }
 
     fun validateEmailAndPassword(): Boolean {
-        return _loginSate.value.email.isNotBlank() && _loginSate.value.password.isNotBlank()
+        return _loginState.value.email.isNotBlank() && _loginState.value.password.isNotBlank()
     }
 }
