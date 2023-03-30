@@ -3,6 +3,7 @@ package com.example.chatapp.presentation.signup.composable
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,13 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
+import com.example.chatapp.presentation.composable.ErrorTextFieldItem
 import com.example.chatapp.presentation.signup.SignupEvent
 import com.example.chatapp.presentation.signup.SignupUiEvent
 import com.example.chatapp.util.Resource
@@ -31,11 +33,16 @@ fun SignupScreen(
     viewModel: SignupViewModel = hiltViewModel()
 ) {
 
-    val login = viewModel.signupState.value.email
+    val email = viewModel.signupState.value.email
+    val emailError = viewModel.signupState.value.emailError
     val password = viewModel.signupState.value.password
+    val passwordError = viewModel.signupState.value.passwordError
     val confirmPassword = viewModel.signupState.value.confirmPassword
+    val confirmPasswordError = viewModel.signupState.value.confirmPasswordError
     val firstName = viewModel.signupState.value.firstName
+    val firstNameError = viewModel.signupState.value.firstNameError
     val lastName = viewModel.signupState.value.lastName
+    val lastNameError = viewModel.signupState.value.lastNameError
     val signupResponse = viewModel.signupState.value.signupResponse
 
     LaunchedEffect(key1 = true) {
@@ -69,8 +76,12 @@ fun SignupScreen(
         Column(
         ) {
             OutlinedTextField(
-                value = login,
+                value = email,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                ),
+                isError = emailError != null,
                 label = { Text(stringResource(id = R.string.email)) },
                 placeholder = { Text(stringResource(id = R.string.email)) },
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredEmail(it)) },
@@ -78,11 +89,21 @@ fun SignupScreen(
                     .fillMaxWidth()
             )
 
+            if(emailError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = emailError
+                )
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = password,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password
+                ),
+                isError = passwordError != null,
                 label = { Text(stringResource(id = R.string.password)) },
                 placeholder = { Text(stringResource(id = R.string.password)) },
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredPassword(it)) },
@@ -90,11 +111,21 @@ fun SignupScreen(
                     .fillMaxWidth()
             )
 
+            if(passwordError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = passwordError
+                )
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = confirmPassword,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password
+                ),
+                isError = confirmPasswordError != null,
                 label = { Text(stringResource(id = R.string.confirm_password)) },
                 placeholder = { Text(stringResource(id = R.string.confirm_password)) },
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredConfirmPassword(it)) },
@@ -102,11 +133,18 @@ fun SignupScreen(
                     .fillMaxWidth()
             )
 
+            if(confirmPasswordError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = confirmPasswordError
+                )
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = firstName,
                 singleLine = true,
+                isError = firstNameError != null,
                 label = { Text(stringResource(id = R.string.first_name)) },
                 placeholder = { Text(stringResource(id = R.string.first_name)) },
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredFirstName(it)) },
@@ -114,17 +152,30 @@ fun SignupScreen(
                     .fillMaxWidth()
             )
 
+            if(firstNameError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = firstNameError
+                )
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = lastName,
                 singleLine = true,
+                isError = lastNameError != null,
                 label = { Text(stringResource(id = R.string.last_name)) },
                 placeholder = { Text(stringResource(id = R.string.last_name)) },
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredLastName(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
             )
+
+            if(lastNameError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = lastNameError
+                )
+            }
         }
 
         OutlinedButton(
