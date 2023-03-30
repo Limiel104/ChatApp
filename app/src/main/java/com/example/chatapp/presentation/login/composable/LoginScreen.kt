@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +24,7 @@ import com.example.chatapp.presentation.login.LoginUiEvent
 import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
+import com.example.chatapp.presentation.composable.ErrorTextFieldItem
 import com.example.chatapp.util.Resource
 import com.example.chatapp.util.Screen
 
@@ -30,8 +34,10 @@ fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-    val login = viewModel.loginState.value.email
+    val email = viewModel.loginState.value.email
+    val emailError = viewModel.loginState.value.emailError
     val password = viewModel.loginState.value.password
+    val passwordError = viewModel.loginState.value.passwordError
     val loginResponse = viewModel.loginState.value.loginResponse
 
     LaunchedEffect(key1 = true) {
@@ -61,11 +67,14 @@ fun LoginScreen(
             fontWeight = FontWeight.SemiBold
         )
 
-        Column(
-        ) {
+        Column {
             OutlinedTextField(
-                value = login,
+                value = email,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                ),
+                isError = emailError != null,
                 label = { Text(stringResource(id = R.string.email)) },
                 placeholder = { Text(stringResource(id = R.string.email)) },
                 onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
@@ -73,17 +82,34 @@ fun LoginScreen(
                     .fillMaxWidth()
             )
 
+            if(emailError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = emailError
+                )
+            }
+
             Spacer(modifier = Modifier.height(10.dp))
 
             OutlinedTextField(
                 value = password,
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password
+                ),
+                isError = passwordError != null,
+                visualTransformation = PasswordVisualTransformation(),
                 label = { Text(stringResource(id = R.string.password)) },
                 placeholder = { Text(stringResource(id = R.string.password)) },
                 onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
             )
+
+            if(passwordError != null) {
+                ErrorTextFieldItem(
+                    errorMessage = passwordError
+                )
+            }
         }
 
         OutlinedButton(
