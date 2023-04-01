@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.domain.ValidationResult
-import com.example.chatapp.domain.repository.AuthenticationRepository
+import com.example.chatapp.domain.repository.AuthRepository
+import com.example.chatapp.util.Constants.emailEmptyError
+import com.example.chatapp.util.Constants.passwordEmptyError
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -16,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authenticationRepository: AuthenticationRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _loginState = mutableStateOf(LoginState())
@@ -38,8 +40,11 @@ class LoginViewModel @Inject constructor(
                 )
             }
             is LoginEvent.Login -> {
-                if (isValidationSuccessful()) {
-                    login(_loginState.value.email, _loginState.value.password)
+                val email = _loginState.value.email
+                val password = _loginState.value.password
+
+                if (isValidationSuccessful(email,password)) {
+                    login(email,password)
                 } else {
                     Log.i("TAG", "Invalid login credentials")
                 }
@@ -53,7 +58,7 @@ class LoginViewModel @Inject constructor(
                 loginResponse = Resource.Loading
             )
             _loginState.value = loginState.value.copy(
-                loginResponse = authenticationRepository.login(email, password)
+                loginResponse = authRepository.login(email, password)
             )
 
             when (_loginState.value.loginResponse) {
@@ -80,7 +85,7 @@ class LoginViewModel @Inject constructor(
         if (email.isBlank()) {
             return ValidationResult(
                 isSuccessful = false,
-                errorMessage = "Email can't be empty"
+                errorMessage = emailEmptyError
             )
         }
         return ValidationResult(
@@ -92,7 +97,7 @@ class LoginViewModel @Inject constructor(
         if (password.isBlank()) {
             return ValidationResult(
                 isSuccessful = false,
-                errorMessage = "Password can't be empty"
+                errorMessage = passwordEmptyError
             )
         }
         return ValidationResult(
@@ -100,9 +105,9 @@ class LoginViewModel @Inject constructor(
         )
     }
 
-    fun isValidationSuccessful(): Boolean {
-        val emailValidationResult = validateEmail(_loginState.value.email)
-        val passwordValidationResult = validatePassword(_loginState.value.password)
+    fun isValidationSuccessful(email: String, password: String): Boolean {
+        val emailValidationResult = validateEmail(email)
+        val passwordValidationResult = validatePassword(password)
 
         val hasError = listOf(
             emailValidationResult,

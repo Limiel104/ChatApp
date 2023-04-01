@@ -3,7 +3,7 @@ package com.example.chatapp.domain.repository
 import com.example.chatapp.util.Resource
 import com.google.firebase.auth.FirebaseUser
 
-interface AuthenticationRepository {
+interface AuthRepository {
     val currentUser: FirebaseUser?
 
     suspend fun login(email: String, password: String): Resource<FirebaseUser>

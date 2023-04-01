@@ -1,6 +1,6 @@
 package com.example.chatapp.data.repository
 
-import com.example.chatapp.domain.repository.AuthenticationRepository
+import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -8,9 +8,9 @@ import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class AuthenticationRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl @Inject constructor(
     private val firebaseAuth: FirebaseAuth
-): AuthenticationRepository {
+): AuthRepository {
     override val currentUser: FirebaseUser?
         get() = firebaseAuth.currentUser
 
