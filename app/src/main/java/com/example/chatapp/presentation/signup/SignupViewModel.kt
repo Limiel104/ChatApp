@@ -88,6 +88,7 @@ class SignupViewModel @Inject constructor(
                     _eventFlow.emit(SignupUiEvent.Signup)
                 }
                 is Resource.Error -> {
+                    val errorMessage = (_signupState.value.signupResponse as Resource.Error).message
                     Log.i("TAG", "Signup Error")
                     _signupState.value = signupState.value.copy(
                         emailError =  null,
@@ -96,6 +97,7 @@ class SignupViewModel @Inject constructor(
                         firstNameError = null,
                         lastNameError = null
                     )
+                    _eventFlow.emit(SignupUiEvent.ShowErrorMessage(errorMessage))
                 }
                 else -> {
                     Log.i("TAG", "Loading...")

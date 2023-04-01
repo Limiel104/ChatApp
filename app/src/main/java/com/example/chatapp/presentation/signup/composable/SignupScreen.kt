@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.signup.composable
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,7 +45,8 @@ fun SignupScreen(
     val firstNameError = viewModel.signupState.value.firstNameError
     val lastName = viewModel.signupState.value.lastName
     val lastNameError = viewModel.signupState.value.lastNameError
-    val signupResponse = viewModel.signupState.value.signupResponse
+    val isLoading = viewModel.signupState.value.signupResponse == Resource.Loading
+    val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -54,6 +57,9 @@ fun SignupScreen(
                         popUpTo(Screen.SignupScreen.route) { inclusive = true }
                         popUpTo(Screen.LoginScreen.route) { inclusive = true }
                     }
+                }
+                is SignupUiEvent.ShowErrorMessage -> {
+                    Toast.makeText(context,event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -192,7 +198,7 @@ fun SignupScreen(
         }
     }
 
-    if(signupResponse == Resource.Loading) {
+    if(isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center

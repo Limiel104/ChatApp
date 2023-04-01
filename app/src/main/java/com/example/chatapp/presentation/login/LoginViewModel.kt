@@ -61,11 +61,13 @@ class LoginViewModel @Inject constructor(
                     _eventFlow.emit(LoginUiEvent.Login)
                 }
                 is Resource.Error -> {
+                    val errorMessage = (_loginState.value.loginResponse as Resource.Error).message
                     Log.i("TAG", "Login Error")
                     _loginState.value = loginState.value.copy(
                         emailError = null,
                         passwordError = null
                     )
+                    _eventFlow.emit(LoginUiEvent.ShowErrorMessage(errorMessage))
                 }
                 else -> {
                     Log.i("TAG", "Loading...")
