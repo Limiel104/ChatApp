@@ -1,14 +1,29 @@
 package com.example.chatapp.presentation.signup
 
 import com.example.chatapp.data.repository.FakeAuthRepository
+import com.example.chatapp.util.Constants.confirmPasswordCorrect
 import com.example.chatapp.util.Constants.confirmPasswordError
+import com.example.chatapp.util.Constants.confirmPasswordIncorrect
 import com.example.chatapp.util.Constants.containsAtLeastOneCapitalLetterError
 import com.example.chatapp.util.Constants.containsAtLeastOneDigitError
 import com.example.chatapp.util.Constants.containsAtLeastOneSpecialCharError
 import com.example.chatapp.util.Constants.digitsInNameError
+import com.example.chatapp.util.Constants.emailCorrect
 import com.example.chatapp.util.Constants.emailEmptyError
+import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Constants.fieldEmptyError
+import com.example.chatapp.util.Constants.firstNameCorrect
+import com.example.chatapp.util.Constants.firstNameHasDigit
+import com.example.chatapp.util.Constants.firstNameHasSpecialChar
+import com.example.chatapp.util.Constants.lastNameCorrect
+import com.example.chatapp.util.Constants.lastNameHasSpecialChar
+import com.example.chatapp.util.Constants.passwordCorrect
 import com.example.chatapp.util.Constants.passwordEmptyError
+import com.example.chatapp.util.Constants.passwordIncorrect
+import com.example.chatapp.util.Constants.passwordTooShort
+import com.example.chatapp.util.Constants.passwordWithoutCapitalLetter
+import com.example.chatapp.util.Constants.passwordWithoutDigit
+import com.example.chatapp.util.Constants.passwordWithoutSpecialChar
 import com.example.chatapp.util.Constants.shortPasswordError
 import com.example.chatapp.util.Constants.specialCharsInNameError
 import com.google.common.truth.Truth.assertThat
@@ -26,14 +41,14 @@ class SignupViewModelTest {
 
     @Test
     fun validateEmail_isCorrect() {
-        val email = "test@test.com"
+        val email = emailCorrect
         val result = viewModel.validateEmail(email)
         assertThat(result.isSuccessful).isTrue()
     }
 
     @Test
     fun validateEmail_isNotBlank_returnFalse() {
-        val email = ""
+        val email = emptyString
         val result = viewModel.validateEmail(email)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(emailEmptyError)
@@ -41,14 +56,14 @@ class SignupViewModelTest {
 
     @Test
     fun validatePassword_isCorrect() {
-        val password = "Qwerty1+"
+        val password = passwordCorrect
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isTrue()
     }
 
     @Test
     fun validatePassword_isNotBlank_returnFalse() {
-        val password = ""
+        val password = emptyString
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(passwordEmptyError)
@@ -56,7 +71,7 @@ class SignupViewModelTest {
 
     @Test
     fun validatePassword_isOfCorrectLength_returnFalse() {
-        val password = "Qwe"
+        val password = passwordTooShort
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(shortPasswordError)
@@ -64,7 +79,7 @@ class SignupViewModelTest {
 
     @Test
     fun validatePassword_containsAtLeastOneDigit_returnFalse() {
-        val password = "Qwerty++"
+        val password = passwordWithoutDigit
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(containsAtLeastOneDigitError)
@@ -72,7 +87,7 @@ class SignupViewModelTest {
 
     @Test
     fun validatePassword_containsAtLeastOneCapitalLetter_returnFalse() {
-        val password = "qwerty1+"
+        val password = passwordWithoutCapitalLetter
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(containsAtLeastOneCapitalLetterError)
@@ -80,7 +95,7 @@ class SignupViewModelTest {
 
     @Test
     fun validatePassword_containsAtLeastOneSpecialChar_returnFalse() {
-        val password = "Qwerty12"
+        val password = passwordWithoutSpecialChar
         val result = viewModel.validatePassword(password)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(containsAtLeastOneSpecialCharError)
@@ -88,22 +103,22 @@ class SignupViewModelTest {
 
     @Test
     fun validateConfirmPassword_passwordsMatch() {
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+"
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordCorrect
         val result = viewModel.validateConfirmPassword(password, confirmPassword)
         assertThat(result.isSuccessful).isTrue()
     }
 
     @Test
     fun validateConfirmPassword_passwordsMatch_returnFalse() {
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+++++"
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordIncorrect
         val result = viewModel.validateConfirmPassword(password, confirmPassword)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(confirmPasswordError)
 
-        val password2 = "Qwerty1+"
-        val confirmPassword2 = ""
+        val password2 = passwordCorrect
+        val confirmPassword2 = emptyString
         val result2 = viewModel.validateConfirmPassword(password2, confirmPassword2)
         assertThat(result2.isSuccessful).isFalse()
         assertThat(result2.errorMessage).isEqualTo(confirmPasswordError)
@@ -111,14 +126,14 @@ class SignupViewModelTest {
 
     @Test
     fun validateName_isCorrect() {
-        val name = "John"
+        val name = firstNameCorrect
         val result = viewModel.validateName(name)
         assertThat(result.isSuccessful).isTrue()
     }
 
     @Test
     fun validateName_isNotBlank_returnFalse() {
-        val name = ""
+        val name = emptyString
         val result = viewModel.validateName(name)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(fieldEmptyError)
@@ -126,7 +141,7 @@ class SignupViewModelTest {
 
     @Test
     fun validateName_doesNotContainDigit_returnFalse() {
-        val name = "John 3rd"
+        val name = firstNameHasDigit
         val result = viewModel.validateName(name)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(digitsInNameError)
@@ -134,7 +149,7 @@ class SignupViewModelTest {
 
     @Test
     fun validateName_doesNotContainSpecialChar_returnFalse() {
-        val name = "John's"
+        val name = firstNameHasSpecialChar
         val result = viewModel.validateName(name)
         assertThat(result.isSuccessful).isFalse()
         assertThat(result.errorMessage).isEqualTo(specialCharsInNameError)
@@ -142,11 +157,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_allCorrect() {
-        val email = "test@test.com"
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+"
-        val firstName = "John"
-        val lastName = "Smith"
+        val email = emailCorrect
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordCorrect
+        val firstName = firstNameCorrect
+        val lastName = lastNameCorrect
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isTrue()
@@ -154,11 +169,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_emailIncorrect() {
-        val email = ""
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+"
-        val firstName = "John"
-        val lastName = "Smith"
+        val email = emptyString
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordCorrect
+        val firstName = firstNameCorrect
+        val lastName = lastNameCorrect
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()
@@ -166,11 +181,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_passwordIncorrect() {
-        val email = "test@test.com"
-        val password = "qwerty"
-        val confirmPassword = "qwerty"
-        val firstName = "John"
-        val lastName = "Smith"
+        val email = emailCorrect
+        val password = passwordIncorrect
+        val confirmPassword = passwordIncorrect
+        val firstName = firstNameCorrect
+        val lastName = lastNameCorrect
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()
@@ -178,11 +193,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_confirmPasswordIncorrect() {
-        val email = "test@test.com"
-        val password = "Qwerty1+"
-        val confirmPassword = "qwerty"
-        val firstName = "John"
-        val lastName = "Smith"
+        val email = emailCorrect
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordIncorrect
+        val firstName = firstNameCorrect
+        val lastName = lastNameCorrect
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()
@@ -190,11 +205,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_firstNameIncorrect() {
-        val email = "test@test.com"
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+"
-        val firstName = "John 3rd"
-        val lastName = "Smith"
+        val email = emailCorrect
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordIncorrect
+        val firstName = firstNameHasDigit
+        val lastName = lastNameCorrect
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()
@@ -202,11 +217,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_lastNameIncorrect() {
-        val email = "test@test.com"
-        val password = "Qwerty1+"
-        val confirmPassword = "Qwerty1+"
-        val firstName = "John"
-        val lastName = "Smith's"
+        val email = emailCorrect
+        val password = passwordCorrect
+        val confirmPassword = confirmPasswordCorrect
+        val firstName = firstNameCorrect
+        val lastName = lastNameHasSpecialChar
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()
@@ -214,11 +229,11 @@ class SignupViewModelTest {
 
     @Test
     fun isValidationSuccessful_allIncorrect() {
-        val email = ""
-        val password = "qwerty"
-        val confirmPassword = "Qwerty1+"
-        val firstName = "John 3rd"
-        val lastName = "Smith's"
+        val email = emptyString
+        val password = passwordIncorrect
+        val confirmPassword = confirmPasswordIncorrect
+        val firstName = firstNameHasDigit
+        val lastName = lastNameHasSpecialChar
 
         val result = viewModel.isValidationSuccessful(email,password,confirmPassword,firstName,lastName)
         assertThat(result).isFalse()

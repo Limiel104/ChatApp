@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +25,18 @@ import com.example.chatapp.R
 import com.example.chatapp.presentation.composable.ErrorTextFieldItem
 import com.example.chatapp.presentation.signup.SignupEvent
 import com.example.chatapp.presentation.signup.SignupUiEvent
+import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
+import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
+import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
+import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
+import com.example.chatapp.util.Constants.EMAIL_TF
+import com.example.chatapp.util.Constants.FIRST_NAME_ERROR_TF
+import com.example.chatapp.util.Constants.FIRST_NAME_TF
+import com.example.chatapp.util.Constants.LAST_NAME_ERROR_TF
+import com.example.chatapp.util.Constants.LAST_NAME_TF
+import com.example.chatapp.util.Constants.PASSWORD_ERROR_TF
+import com.example.chatapp.util.Constants.PASSWORD_TF
+import com.example.chatapp.util.Constants.SIGNUP_BUTTON
 import com.example.chatapp.util.Resource
 import com.example.chatapp.util.Screen
 import kotlinx.coroutines.flow.collectLatest
@@ -93,11 +106,13 @@ fun SignupScreen(
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredEmail(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(EMAIL_TF)
             )
 
             if(emailError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = emailError
+                    errorMessage = emailError,
+                    testTag = EMAIL_ERROR_TF
                 )
             }
 
@@ -115,11 +130,13 @@ fun SignupScreen(
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredPassword(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(PASSWORD_TF)
             )
 
             if(passwordError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = passwordError
+                    errorMessage = passwordError,
+                    testTag = PASSWORD_ERROR_TF
                 )
             }
 
@@ -137,11 +154,13 @@ fun SignupScreen(
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredConfirmPassword(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(CONFIRM_PASSWORD_TF)
             )
 
             if(confirmPasswordError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = confirmPasswordError
+                    errorMessage = confirmPasswordError,
+                    testTag = CONFIRM_PASSWORD_ERROR_TF
                 )
             }
 
@@ -156,11 +175,13 @@ fun SignupScreen(
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredFirstName(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(FIRST_NAME_TF)
             )
 
             if(firstNameError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = firstNameError
+                    errorMessage = firstNameError,
+                    testTag = FIRST_NAME_ERROR_TF
                 )
             }
 
@@ -175,18 +196,21 @@ fun SignupScreen(
                 onValueChange = { viewModel.onEvent(SignupEvent.EnteredLastName(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(LAST_NAME_TF)
             )
 
             if(lastNameError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = lastNameError
+                    errorMessage = lastNameError,
+                    testTag = LAST_NAME_ERROR_TF
                 )
             }
         }
 
         OutlinedButton(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .testTag(SIGNUP_BUTTON),
             colors = ButtonDefaults.buttonColors(Color.Black),
             onClick = { viewModel.onEvent(SignupEvent.Signup) }
         ) {
@@ -200,7 +224,9 @@ fun SignupScreen(
 
     if(isLoading) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(CIRCULAR_INDICATOR),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()

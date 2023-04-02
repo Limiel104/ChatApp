@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,6 +28,13 @@ import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
 import com.example.chatapp.presentation.composable.ErrorTextFieldItem
+import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
+import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
+import com.example.chatapp.util.Constants.EMAIL_TF
+import com.example.chatapp.util.Constants.LOGIN_BUTTON
+import com.example.chatapp.util.Constants.PASSWORD_ERROR_TF
+import com.example.chatapp.util.Constants.PASSWORD_TF
+import com.example.chatapp.util.Constants.SIGNUP_TF
 import com.example.chatapp.util.Resource
 import com.example.chatapp.util.Screen
 
@@ -86,11 +94,13 @@ fun LoginScreen(
                 onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(EMAIL_TF)
             )
 
             if(emailError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = emailError
+                    errorMessage = emailError,
+                    testTag = EMAIL_ERROR_TF
                 )
             }
 
@@ -109,20 +119,23 @@ fun LoginScreen(
                 onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .testTag(PASSWORD_TF)
             )
 
             if(passwordError != null) {
                 ErrorTextFieldItem(
-                    errorMessage = passwordError
+                    errorMessage = passwordError,
+                    testTag = PASSWORD_ERROR_TF
                 )
             }
         }
 
         OutlinedButton(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .testTag(LOGIN_BUTTON),
             colors = ButtonDefaults.buttonColors(Color.Black),
-            onClick = { viewModel.onEvent(LoginEvent.Login) }
+            onClick = { viewModel.onEvent(LoginEvent.Login) },
         ) {
             Text(
                 text = stringResource(id = R.string.login),
@@ -150,13 +163,16 @@ fun LoginScreen(
                     .clickable {
                         navController.navigate(Screen.SignupScreen.route)
                     }
+                    .testTag(SIGNUP_TF)
             )
         }
     }
 
     if(isLoading) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(CIRCULAR_INDICATOR),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
