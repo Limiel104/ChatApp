@@ -49,4 +49,5 @@ object Constants {
     const val lastNameHasSpecialChar: String = "Smith's"
 
     const val USERS_COLLECTION: String = "users"
+    const val USER_UID: String = "userUID"
 }

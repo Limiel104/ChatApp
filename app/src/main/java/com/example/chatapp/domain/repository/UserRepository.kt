@@ -13,5 +13,5 @@ interface UserRepository {
         avatarURL: String
     ): Resource<Boolean>
 
-    fun getUserList(): Flow<Resource<List<User>>>
+    fun getUserList(currentUserUID: String): Flow<Resource<List<User>>>
 }

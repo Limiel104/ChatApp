@@ -2,6 +2,7 @@ package com.example.chatapp.data.repository
 
 import com.example.chatapp.domain.model.User
 import com.example.chatapp.domain.repository.UserRepository
+import com.example.chatapp.util.Constants.USER_UID
 import com.example.chatapp.util.Resource
 import com.google.firebase.firestore.CollectionReference
 import kotlinx.coroutines.channels.awaitClose
@@ -34,8 +35,9 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getUserList() = callbackFlow {
+    override fun getUserList(currentUserUID: String) = callbackFlow {
         val snapshotListener = usersRef
+            .whereNotEqualTo(USER_UID,currentUserUID)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
                     val users = snapshot.toObjects(User::class.java)

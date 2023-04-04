@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.domain.repository.UserRepository
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val userRepository: UserRepository
 ): ViewModel() {
 
@@ -26,7 +28,8 @@ class UserListViewModel @Inject constructor(
 
     fun getUsers() {
         viewModelScope.launch {
-            userRepository.getUserList().collect { response ->
+            val currentUserUID = authRepository.currentUser!!.uid
+            userRepository.getUserList(currentUserUID).collect { response ->
                 when (response) {
                     is Resource.Success -> {
                         _userListState.value = userListState.value.copy(
