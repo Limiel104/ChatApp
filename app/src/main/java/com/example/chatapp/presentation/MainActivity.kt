@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.presentation.login.composable.LoginScreen
 import com.example.chatapp.presentation.signup.composable.SignupScreen
+import com.example.chatapp.presentation.user_list.composable.UserListScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Screen
 import dagger.hilt.android.AndroidEntryPoint

@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.composable
+package com.example.chatapp.presentation.user_list.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,30 +9,17 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.chatapp.presentation.user_list.UserListViewModel
 
-//@Preview
 @Composable
 fun UserListScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: UserListViewModel = hiltViewModel()
 ) {
-
-    val userList = listOf(
-        "John Smith",
-        "Madeline Holding ",
-        "Stanley Hall",
-        "Hannah Porter",
-        "Agnes Turner",
-        "Veronica Hall",
-        "Thomas White",
-        "Ian Park",
-        "Taylor Cole",
-        "Blair Vinson",
-        "Brook Glover",
-        "Alex Mckay"
-    )
+    val userList = viewModel.userListState.value.userList
 
     Column(
         modifier = Modifier
@@ -44,8 +31,8 @@ fun UserListScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            itemsIndexed(userList) { index, string ->
-                UserListItem(string)
+            itemsIndexed(userList) { index, user ->
+                UserListItem(user)
             }
         }
     }

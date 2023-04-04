@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.composable
+package com.example.chatapp.presentation.user_list.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,11 +19,12 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.chatapp.R
+import com.example.chatapp.domain.model.User
+import com.example.chatapp.ui.theme.ChatAppTheme
 
-@Preview
 @Composable
 fun UserListItem(
-    name: String = "John Smith"
+    user: User
 ) {
     Row(
         modifier = Modifier
@@ -62,7 +63,7 @@ fun UserListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = name,
+                    text = user.firstName + " " + user.lastName,
                     fontWeight = FontWeight.SemiBold,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1
@@ -87,5 +88,21 @@ fun UserListItem(
                 fontSize = 13.sp
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun UserListItemPreview() {
+    ChatAppTheme() {
+
+        val user = User(
+            userUID = "1234567890",
+            firstName = "John",
+            lastName = "Smith",
+            avatarURL = "url"
+        )
+
+        UserListItem(user = user)
     }
 }

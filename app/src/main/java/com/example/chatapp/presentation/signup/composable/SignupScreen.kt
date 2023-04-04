@@ -41,7 +41,6 @@ import com.example.chatapp.util.Resource
 import com.example.chatapp.util.Screen
 import kotlinx.coroutines.flow.collectLatest
 
-//@Preview
 @Composable
 fun SignupScreen(
     navController: NavController,

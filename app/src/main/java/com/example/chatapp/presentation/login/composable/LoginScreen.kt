@@ -38,7 +38,6 @@ import com.example.chatapp.util.Constants.SIGNUP_TF
 import com.example.chatapp.util.Resource
 import com.example.chatapp.util.Screen
 
-//@Preview
 @Composable
 fun LoginScreen(
     navController: NavController,
