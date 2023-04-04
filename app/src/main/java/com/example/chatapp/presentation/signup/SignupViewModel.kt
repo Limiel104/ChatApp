@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.domain.ValidationResult
 import com.example.chatapp.domain.repository.AuthRepository
+import com.example.chatapp.domain.repository.UserRepository
 import com.example.chatapp.util.Constants.confirmPasswordError
 import com.example.chatapp.util.Constants.containsAtLeastOneCapitalLetterError
 import com.example.chatapp.util.Constants.containsAtLeastOneDigitError
@@ -27,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _signupState = mutableStateOf(SignupState())
@@ -94,12 +96,20 @@ class SignupViewModel @Inject constructor(
                 )
             )
 
-            when (_signupState.value.signupResponse) {
+            when (val signupResponse = _signupState.value.signupResponse) {
                 is Resource.Success -> {
+                    when(val addUserResponse = userRepository.addUser(authRepository.currentUser!!.uid, firstName, lastName, "avatarURL")) {
+                        is Resource.Error -> {
+                            Log.i("TAG","Error while adding new user")
+                            val errorMessage = addUserResponse.message
+                            _eventFlow.emit(SignupUiEvent.ShowErrorMessage(errorMessage))
+                        }
+                        else -> {}
+                    }
                     _eventFlow.emit(SignupUiEvent.Signup)
                 }
                 is Resource.Error -> {
-                    val errorMessage = (_signupState.value.signupResponse as Resource.Error).message
+                    val errorMessage = signupResponse.message
                     Log.i("TAG", "Signup Error")
                     _signupState.value = signupState.value.copy(
                         emailError =  null,
