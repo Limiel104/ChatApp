@@ -66,8 +66,7 @@ fun SignupScreen(
                 is SignupUiEvent.Signup -> {
                     Log.i("TAG","Signup successfully")
                     navController.navigate(Screen.UserListScreen.route) {
-                        popUpTo(Screen.SignupScreen.route) { inclusive = true }
-                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                        popUpTo(Screen.UserListScreen.route) { inclusive = true }
                     }
                 }
                 is SignupUiEvent.ShowErrorMessage -> {

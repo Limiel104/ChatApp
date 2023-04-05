@@ -12,6 +12,8 @@ import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +25,9 @@ class UserListViewModel @Inject constructor(
 
     private val _userListState = mutableStateOf(UserListState())
     val userListState: State<UserListState> = _userListState
+
+    private val _eventFlow = MutableSharedFlow<UserListUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private var searchQueryJob: Job? = null
 
@@ -42,6 +47,9 @@ class UserListViewModel @Inject constructor(
                     delay(500L)
                     getUsers()
                 }
+            }
+            is UserListEvent.Logout -> {
+                logout()
             }
         }
     }
@@ -75,6 +83,13 @@ class UserListViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
+            _eventFlow.emit(UserListUiEvent.Logout)
         }
     }
 }

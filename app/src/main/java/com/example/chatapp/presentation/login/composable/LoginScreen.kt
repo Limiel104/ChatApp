@@ -56,7 +56,7 @@ fun LoginScreen(
                 is LoginUiEvent.Login -> {
                     Log.i("TAG","Logged in successfully")
                     navController.navigate(Screen.UserListScreen.route) {
-                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                        popUpTo(Screen.UserListScreen.route) { inclusive = true }
                     }
                 }
                 is LoginUiEvent.ShowErrorMessage -> {
