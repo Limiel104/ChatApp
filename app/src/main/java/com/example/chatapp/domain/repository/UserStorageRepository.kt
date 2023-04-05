@@ -4,7 +4,7 @@ import com.example.chatapp.domain.model.User
 import com.example.chatapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 
-interface UserRepository {
+interface UserStorageRepository {
 
     suspend fun addUser(
         userUID: String,

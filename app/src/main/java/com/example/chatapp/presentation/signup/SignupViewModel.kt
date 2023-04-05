@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatapp.domain.ValidationResult
 import com.example.chatapp.domain.repository.AuthRepository
-import com.example.chatapp.domain.repository.UserRepository
+import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.util.Constants.confirmPasswordError
 import com.example.chatapp.util.Constants.containsAtLeastOneCapitalLetterError
 import com.example.chatapp.util.Constants.containsAtLeastOneDigitError
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserStorageRepository
 ) : ViewModel() {
 
     private val _signupState = mutableStateOf(SignupState())

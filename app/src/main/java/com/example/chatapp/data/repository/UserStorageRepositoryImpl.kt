@@ -1,7 +1,7 @@
 package com.example.chatapp.data.repository
 
 import com.example.chatapp.domain.model.User
-import com.example.chatapp.domain.repository.UserRepository
+import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.util.Constants.USER_UID
 import com.example.chatapp.util.Resource
 import com.google.firebase.firestore.CollectionReference
@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+class UserStorageRepositoryImpl @Inject constructor(
     private val usersRef: CollectionReference
-) : UserRepository {
+) : UserStorageRepository {
 
     override suspend fun addUser(
         userUID: String,
