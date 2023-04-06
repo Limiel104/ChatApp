@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.signup
 
 import com.example.chatapp.data.repository.FakeAuthRepository
+import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.util.Constants.confirmPasswordCorrect
 import com.example.chatapp.util.Constants.confirmPasswordError
 import com.example.chatapp.util.Constants.confirmPasswordIncorrect
@@ -36,7 +37,7 @@ class SignupViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = SignupViewModel(FakeAuthRepository())
+        viewModel = SignupViewModel(FakeAuthRepository(), FakeUserStorageRepository())
     }
 
     @Test

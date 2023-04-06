@@ -102,7 +102,12 @@ fun UserListScreen(
                 .fillMaxSize()
         ) {
             itemsIndexed(userList) { index, user ->
-                UserListItem(user)
+                UserListItem(
+                    user = user,
+                    onItemClick = {
+                        navController.navigate(Screen.ChatScreen.route)
+                    }
+                )
             }
         }
     }

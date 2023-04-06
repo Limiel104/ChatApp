@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.user_list.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -24,12 +25,14 @@ import com.example.chatapp.ui.theme.ChatAppTheme
 
 @Composable
 fun UserListItem(
-    user: User
+    user: User,
+    onItemClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
+            .clickable { onItemClick() }
             .padding(5.dp, 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -103,6 +106,6 @@ fun UserListItemPreview() {
             avatarURL = "url"
         )
 
-        UserListItem(user = user)
+        UserListItem(user = user,{})
     }
 }

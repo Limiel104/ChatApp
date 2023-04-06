@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserListViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserStorageRepository
+    private val userStorageRepository: UserStorageRepository
 ): ViewModel() {
 
     private val _userListState = mutableStateOf(UserListState())
@@ -59,7 +59,7 @@ class UserListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val currentUserUID = authRepository.currentUser!!.uid
-            userRepository.getUserList(currentUserUID).collect { response ->
+            userStorageRepository.getUserList(currentUserUID).collect { response ->
                 when (response) {
                     is Resource.Success -> {
                         if(query != emptyString) {

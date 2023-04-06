@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserStorageRepository
+    private val userStorageRepository: UserStorageRepository
 ) : ViewModel() {
 
     private val _signupState = mutableStateOf(SignupState())
@@ -98,7 +98,7 @@ class SignupViewModel @Inject constructor(
 
             when (val signupResponse = _signupState.value.signupResponse) {
                 is Resource.Success -> {
-                    when(val addUserResponse = userRepository.addUser(authRepository.currentUser!!.uid, firstName, lastName, "avatarURL")) {
+                    when(val addUserResponse = userStorageRepository.addUser(authRepository.currentUser!!.uid, firstName, lastName, "avatarURL")) {
                         is Resource.Error -> {
                             Log.i("TAG","Error while adding new user")
                             val errorMessage = addUserResponse.message
