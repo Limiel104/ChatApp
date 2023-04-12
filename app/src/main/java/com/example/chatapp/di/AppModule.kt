@@ -4,9 +4,7 @@ import com.example.chatapp.data.repository.AuthRepositoryImpl
 import com.example.chatapp.data.repository.UserStorageRepositoryImpl
 import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.domain.repository.UserStorageRepository
-import com.example.chatapp.domain.use_case.ChatUseCases
-import com.example.chatapp.domain.use_case.ValidateLoginEmailUseCase
-import com.example.chatapp.domain.use_case.ValidateLoginPasswordUseCase
+import com.example.chatapp.domain.use_case.*
 import com.example.chatapp.util.Constants.USERS_COLLECTION
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -49,8 +47,11 @@ object AppModule {
     @Singleton
     fun provideChatUseCases(): ChatUseCases {
         return ChatUseCases(
-            validateLoginEmailUseCase = ValidateLoginEmailUseCase(),
-            validateLoginPasswordUseCase = ValidateLoginPasswordUseCase()
+            validateEmailUseCase = ValidateEmailUseCase(),
+            validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
+            validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
+            validateConfirmPasswordUseCase = ValidateConfirmPasswordUseCase(),
+            validateNameUseCase = ValidateNameUseCase()
         )
     }
 }

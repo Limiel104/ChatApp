@@ -1,6 +1,9 @@
 package com.example.chatapp.domain.use_case
 
 data class ChatUseCases(
-    val validateLoginEmailUseCase: ValidateLoginEmailUseCase,
-    val validateLoginPasswordUseCase: ValidateLoginPasswordUseCase
+    val validateEmailUseCase: ValidateEmailUseCase,
+    val validateLoginPasswordUseCase: ValidateLoginPasswordUseCase,
+    val validateSignupPasswordUseCase: ValidateSignupPasswordUseCase,
+    val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
+    val validateNameUseCase: ValidateNameUseCase
 )

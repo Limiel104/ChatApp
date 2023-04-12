@@ -81,7 +81,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun isValidationSuccessful(email: String, password: String): Boolean {
-        val emailValidationResult = chatUseCases.validateLoginEmailUseCase(email)
+        val emailValidationResult = chatUseCases.validateEmailUseCase(email)
         val passwordValidationResult = chatUseCases.validateLoginPasswordUseCase(password)
 
         val hasError = listOf(

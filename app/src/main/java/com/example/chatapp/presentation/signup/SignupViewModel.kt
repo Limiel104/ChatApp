@@ -5,20 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapp.domain.ValidationResult
 import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.domain.repository.UserStorageRepository
-import com.example.chatapp.util.Constants.confirmPasswordError
-import com.example.chatapp.util.Constants.containsAtLeastOneCapitalLetterError
-import com.example.chatapp.util.Constants.containsAtLeastOneDigitError
-import com.example.chatapp.util.Constants.containsAtLeastOneSpecialCharError
-import com.example.chatapp.util.Constants.digitsInNameError
-import com.example.chatapp.util.Constants.emailEmptyError
-import com.example.chatapp.util.Constants.fieldEmptyError
-import com.example.chatapp.util.Constants.passwordEmptyError
-import com.example.chatapp.util.Constants.shortPasswordError
-import com.example.chatapp.util.Constants.specialChars
-import com.example.chatapp.util.Constants.specialCharsInNameError
+import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userStorageRepository: UserStorageRepository
+    private val userStorageRepository: UserStorageRepository,
+    private val chatUseCases: ChatUseCases
 ) : ViewModel() {
 
     private val _signupState = mutableStateOf(SignupState())
@@ -127,95 +117,6 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    fun validateEmail(email: String): ValidationResult {
-        if (email.isBlank()) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = emailEmptyError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
-    fun validatePassword(password: String): ValidationResult {
-        if (password.isBlank()) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = passwordEmptyError
-            )
-        }
-        if (password.length < 8) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = shortPasswordError
-            )
-        }
-        val containsAtLeastOneDigit = password.any { it.isDigit() }
-        if (!containsAtLeastOneDigit) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = containsAtLeastOneDigitError
-            )
-        }
-        val containsAtLeastOneCapitalLetter = password.any { it.isUpperCase() }
-        if (!containsAtLeastOneCapitalLetter) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = containsAtLeastOneCapitalLetterError
-            )
-        }
-        val containsAtLeastOneSpecialChar = password.any { it in specialChars }
-        if (!containsAtLeastOneSpecialChar) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = containsAtLeastOneSpecialCharError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
-    fun validateConfirmPassword(password: String, confirmPassword: String): ValidationResult {
-        if (password != confirmPassword) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = confirmPasswordError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
-    fun validateName(name: String): ValidationResult {
-        if (name.isBlank()) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = fieldEmptyError
-            )
-        }
-        val containsDigit = name.any { it.isDigit() }
-        if (containsDigit) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = digitsInNameError
-            )
-        }
-        val containsSpecialChar = name.any { it in specialChars }
-        if (containsSpecialChar) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = specialCharsInNameError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
     fun isValidationSuccessful(
         email: String,
         password: String,
@@ -223,11 +124,11 @@ class SignupViewModel @Inject constructor(
         firstName: String,
         lastName: String
     ): Boolean {
-        val emailValidationResult = validateEmail(email)
-        val passwordValidationResult = validatePassword(password)
-        val confirmPasswordValidationResult = validateConfirmPassword(password,confirmPassword)
-        val firstNameValidationResult = validateName(firstName)
-        val lastNameValidationResult = validateName(lastName)
+        val emailValidationResult = chatUseCases.validateEmailUseCase(email)
+        val passwordValidationResult = chatUseCases.validateSignupPasswordUseCase(password)
+        val confirmPasswordValidationResult = chatUseCases.validateConfirmPasswordUseCase(password, confirmPassword)
+        val firstNameValidationResult = chatUseCases.validateNameUseCase(firstName)
+        val lastNameValidationResult = chatUseCases.validateNameUseCase(lastName)
 
         val hasError = listOf(
             emailValidationResult,
