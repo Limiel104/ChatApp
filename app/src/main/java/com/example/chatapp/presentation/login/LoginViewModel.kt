@@ -5,10 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapp.domain.ValidationResult
 import com.example.chatapp.domain.repository.AuthRepository
-import com.example.chatapp.util.Constants.emailEmptyError
-import com.example.chatapp.util.Constants.passwordEmptyError
+import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val chatUseCases: ChatUseCases
 ) : ViewModel() {
 
     private val _loginState = mutableStateOf(LoginState())
@@ -43,8 +42,8 @@ class LoginViewModel @Inject constructor(
                 val email = _loginState.value.email
                 val password = _loginState.value.password
 
-                if (isValidationSuccessful(email,password)) {
-                    login(email,password)
+                if (isValidationSuccessful(email, password)) {
+                    login(email, password)
                 } else {
                     Log.i("TAG", "Invalid login credentials")
                 }
@@ -81,42 +80,18 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun validateEmail(email: String): ValidationResult {
-        if (email.isBlank()) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = emailEmptyError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
-    fun validatePassword(password: String): ValidationResult {
-        if (password.isBlank()) {
-            return ValidationResult(
-                isSuccessful = false,
-                errorMessage = passwordEmptyError
-            )
-        }
-        return ValidationResult(
-            isSuccessful = true
-        )
-    }
-
     fun isValidationSuccessful(email: String, password: String): Boolean {
-        val emailValidationResult = validateEmail(email)
-        val passwordValidationResult = validatePassword(password)
+        val emailValidationResult = chatUseCases.validateLoginEmailUseCase(email)
+        val passwordValidationResult = chatUseCases.validateLoginPasswordUseCase(password)
 
         val hasError = listOf(
             emailValidationResult,
             passwordValidationResult
         ).any { !it.isSuccessful }
 
-        if(hasError) {
+        if (hasError) {
             _loginState.value = loginState.value.copy(
-                emailError =  emailValidationResult.errorMessage,
+                emailError = emailValidationResult.errorMessage,
                 passwordError = passwordValidationResult.errorMessage
             )
             return false
