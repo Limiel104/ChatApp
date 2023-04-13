@@ -45,8 +45,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideChatUseCases(): ChatUseCases {
+    fun provideChatUseCases(
+        authRepository: AuthRepository
+    ): ChatUseCases {
         return ChatUseCases(
+            loginUseCase = LoginUseCase(authRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

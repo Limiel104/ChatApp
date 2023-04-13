@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
     private val chatUseCases: ChatUseCases
 ) : ViewModel() {
 
@@ -57,7 +55,7 @@ class LoginViewModel @Inject constructor(
                 loginResponse = Resource.Loading
             )
             _loginState.value = loginState.value.copy(
-                loginResponse = authRepository.login(email, password)
+                loginResponse = chatUseCases.loginUseCase(email, password)
             )
 
             when (_loginState.value.loginResponse) {
