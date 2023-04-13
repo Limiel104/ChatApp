@@ -5,7 +5,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapp.domain.repository.AuthRepository
 import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Resource
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
     private val userStorageRepository: UserStorageRepository,
     private val chatUseCases: ChatUseCases
 ) : ViewModel() {
@@ -88,7 +86,8 @@ class SignupViewModel @Inject constructor(
 
             when (val signupResponse = _signupState.value.signupResponse) {
                 is Resource.Success -> {
-                    when(val addUserResponse = userStorageRepository.addUser(authRepository.currentUser!!.uid, firstName, lastName, "avatarURL")) {
+                    val currentUserUid = chatUseCases.getCurrentUserUseCase()!!.uid
+                    when(val addUserResponse = userStorageRepository.addUser(currentUserUid, firstName, lastName, "avatarURL")) {
                         is Resource.Error -> {
                             Log.i("TAG","Error while adding new user")
                             val errorMessage = addUserResponse.message

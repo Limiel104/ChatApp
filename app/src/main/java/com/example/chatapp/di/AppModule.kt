@@ -51,6 +51,7 @@ object AppModule {
         return ChatUseCases(
             loginUseCase = LoginUseCase(authRepository),
             signupUseCase = SignupUseCase(authRepository),
+            getCurrentUserUseCase = GetCurrentUserUseCase(authRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
