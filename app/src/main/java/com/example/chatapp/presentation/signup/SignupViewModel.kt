@@ -78,7 +78,7 @@ class SignupViewModel @Inject constructor(
             )
 
             _signupState.value = signupState.value.copy(
-                signupResponse = authRepository.signup(
+                signupResponse = chatUseCases.signupUseCase(
                     email,
                     password,
                     firstName,
