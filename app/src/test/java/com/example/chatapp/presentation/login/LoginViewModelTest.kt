@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.login
 
 import com.example.chatapp.data.repository.FakeAuthRepository
+import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.use_case.*
 import com.example.chatapp.util.Constants.emailCorrect
 import com.example.chatapp.util.Constants.emptyString
@@ -15,13 +16,24 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = LoginViewModel(FakeAuthRepository(), ChatUseCases(
-            ValidateEmailUseCase(),
-            ValidateLoginPasswordUseCase(),
-            ValidateSignupPasswordUseCase(),
-            ValidateConfirmPasswordUseCase(),
-            ValidateNameUseCase()
-        ))
+        val fakeAuthRepository = FakeAuthRepository()
+        val fakeUserStorageRepository = FakeUserStorageRepository()
+
+        viewModel = LoginViewModel(
+            ChatUseCases(
+                loginUseCase = LoginUseCase(fakeAuthRepository),
+                signupUseCase = SignupUseCase(fakeAuthRepository),
+                logoutUseCase = LogoutUseCase(fakeAuthRepository),
+                getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
+                addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
+                getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
+                validateEmailUseCase = ValidateEmailUseCase(),
+                validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
+                validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
+                validateConfirmPasswordUseCase = ValidateConfirmPasswordUseCase(),
+                validateNameUseCase = ValidateNameUseCase()
+            )
+        )
     }
 
     @Test

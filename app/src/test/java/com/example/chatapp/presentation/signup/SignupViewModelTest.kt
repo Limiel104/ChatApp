@@ -23,13 +23,24 @@ class SignupViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = SignupViewModel(FakeAuthRepository(), FakeUserStorageRepository(), ChatUseCases(
-            ValidateEmailUseCase(),
-            ValidateLoginPasswordUseCase(),
-            ValidateSignupPasswordUseCase(),
-            ValidateConfirmPasswordUseCase(),
-            ValidateNameUseCase()
-        ))
+        val fakeAuthRepository = FakeAuthRepository()
+        val fakeUserStorageRepository = FakeUserStorageRepository()
+
+        viewModel = SignupViewModel(
+            ChatUseCases(
+                loginUseCase = LoginUseCase(fakeAuthRepository),
+                signupUseCase = SignupUseCase(fakeAuthRepository),
+                logoutUseCase = LogoutUseCase(fakeAuthRepository),
+                getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
+                addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
+                getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
+                validateEmailUseCase = ValidateEmailUseCase(),
+                validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
+                validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
+                validateConfirmPasswordUseCase = ValidateConfirmPasswordUseCase(),
+                validateNameUseCase = ValidateNameUseCase()
+            )
+        )
     }
 
     @Test

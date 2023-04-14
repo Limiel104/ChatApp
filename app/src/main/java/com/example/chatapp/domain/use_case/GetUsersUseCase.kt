@@ -5,7 +5,7 @@ import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 
-class GetUserListUseCase(
+class GetUsersUseCase(
     private val userStorageRepository: UserStorageRepository
 ) {
     operator fun invoke(currentUserUID: String): Flow<Resource<List<User>>> {

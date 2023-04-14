@@ -57,7 +57,7 @@ class UserListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             val currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
-            chatUseCases.getUserListUseCase(currentUserUID).collect { response ->
+            chatUseCases.getUsersUseCase(currentUserUID).collect { response ->
                 when (response) {
                     is Resource.Success -> {
                         if(query != emptyString) {

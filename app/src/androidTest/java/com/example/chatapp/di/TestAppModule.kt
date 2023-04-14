@@ -45,8 +45,17 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideChatUseCases(): ChatUseCases {
+    fun provideChatUseCases(
+        authRepository: AuthRepository,
+        userStorageRepository: UserStorageRepository
+    ): ChatUseCases {
         return ChatUseCases(
+            loginUseCase = LoginUseCase(authRepository),
+            signupUseCase = SignupUseCase(authRepository),
+            logoutUseCase = LogoutUseCase(authRepository),
+            getCurrentUserUseCase = GetCurrentUserUseCase(authRepository),
+            addUserUseCase = AddUserUseCase(userStorageRepository),
+            getUsersUseCase = GetUsersUseCase(userStorageRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

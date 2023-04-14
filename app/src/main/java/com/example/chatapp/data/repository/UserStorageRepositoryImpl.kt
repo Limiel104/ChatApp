@@ -14,19 +14,8 @@ class UserStorageRepositoryImpl @Inject constructor(
     private val usersRef: CollectionReference
 ) : UserStorageRepository {
 
-    override suspend fun addUser(
-        userUID: String,
-        firstName: String,
-        lastName: String,
-        avatarURL: String
-    ): Resource<Boolean> {
+    override suspend fun addUser(user: User): Resource<Boolean> {
         return try {
-            val user = User(
-                userUID = userUID,
-                firstName = firstName,
-                lastName = lastName,
-                avatarURL = avatarURL
-            )
             usersRef.document().set(user).await()
             Resource.Success(true)
         }
