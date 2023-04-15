@@ -4,7 +4,7 @@ import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.model.User
 import com.example.chatapp.util.Constants.firstNameCorrect
 import com.example.chatapp.util.Constants.lastNameCorrect
-import com.example.chatapp.util.Constants.userUidCorrect
+import com.example.chatapp.util.Constants.userUIDCorrect
 import com.example.chatapp.util.Resource
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
@@ -24,7 +24,7 @@ class AddUserUseCaseTest {
     @Test
     fun addUserToUserStorage() = runBlocking {
         val user = User(
-            userUID = userUidCorrect,
+            userUID = userUIDCorrect,
             firstName = firstNameCorrect,
             lastName = lastNameCorrect,
             avatarURL = "avatarUrl"

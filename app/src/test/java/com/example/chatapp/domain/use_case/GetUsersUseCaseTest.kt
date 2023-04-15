@@ -4,7 +4,7 @@ import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.model.User
 import com.example.chatapp.util.Constants.firstNameCorrect
 import com.example.chatapp.util.Constants.lastNameCorrect
-import com.example.chatapp.util.Constants.userUidCorrect
+import com.example.chatapp.util.Constants.userUIDCorrect
 import com.example.chatapp.util.Resource
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
@@ -23,7 +23,7 @@ class GetUsersUseCaseTest {
         getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository)
 
         val currentUser = User(
-            userUID = userUidCorrect,
+            userUID = userUIDCorrect,
             firstName = firstNameCorrect,
             lastName = lastNameCorrect,
             avatarURL = "avatarUrl"
@@ -62,7 +62,7 @@ class GetUsersUseCaseTest {
 
     @Test
     fun getUsers_currentUserIsNotIncluded() = runBlocking {
-        val currentUserUid = userUidCorrect
+        val currentUserUid = userUIDCorrect
         val users = getUsersUseCase(currentUserUid).first()
 
         assertThat(users).isEqualTo(Resource.Success(result = userList))
