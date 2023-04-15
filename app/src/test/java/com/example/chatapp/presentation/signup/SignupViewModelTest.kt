@@ -34,6 +34,7 @@ class SignupViewModelTest {
                 getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
                 addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
                 getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
+                filterUsersUseCase = FilterUsersUseCase(),
                 validateEmailUseCase = ValidateEmailUseCase(),
                 validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
                 validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

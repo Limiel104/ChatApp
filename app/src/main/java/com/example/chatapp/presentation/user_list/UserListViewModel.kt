@@ -62,7 +62,7 @@ class UserListViewModel @Inject constructor(
                     is Resource.Success -> {
                         if(query != emptyString) {
                             _userListState.value = userListState.value.copy(
-                                userList = chatUseCases.filterUsers(query,response.result)
+                                userList = chatUseCases.filterUsersUseCase(query,response.result)
                             )
                         }
                         else {

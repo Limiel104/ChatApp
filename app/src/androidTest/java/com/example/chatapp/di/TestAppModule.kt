@@ -56,6 +56,7 @@ object TestAppModule {
             getCurrentUserUseCase = GetCurrentUserUseCase(authRepository),
             addUserUseCase = AddUserUseCase(userStorageRepository),
             getUsersUseCase = GetUsersUseCase(userStorageRepository),
+            filterUsersUseCase = FilterUsersUseCase(),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

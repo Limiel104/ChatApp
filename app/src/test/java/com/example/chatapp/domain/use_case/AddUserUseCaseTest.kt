@@ -2,6 +2,7 @@ package com.example.chatapp.domain.use_case
 
 import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.model.User
+import com.example.chatapp.util.Constants.avatarURLCorrect
 import com.example.chatapp.util.Constants.firstNameCorrect
 import com.example.chatapp.util.Constants.lastNameCorrect
 import com.example.chatapp.util.Constants.userUIDCorrect
@@ -27,7 +28,7 @@ class AddUserUseCaseTest {
             userUID = userUIDCorrect,
             firstName = firstNameCorrect,
             lastName = lastNameCorrect,
-            avatarURL = "avatarUrl"
+            avatarURL = avatarURLCorrect
         )
 
         val result = addUserUseCase(user)
