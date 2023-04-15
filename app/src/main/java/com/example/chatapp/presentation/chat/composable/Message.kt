@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.composable
+package com.example.chatapp.presentation.chat.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

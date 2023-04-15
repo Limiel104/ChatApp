@@ -1,13 +1,15 @@
 package com.example.chatapp.di
 
 import com.example.chatapp.data.repository.AuthRepositoryImpl
+import com.example.chatapp.data.repository.MessageStorageRepositoryImpl
 import com.example.chatapp.data.repository.UserStorageRepositoryImpl
 import com.example.chatapp.domain.repository.AuthRepository
+import com.example.chatapp.domain.repository.MessageStorageRepository
 import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.domain.use_case.*
+import com.example.chatapp.util.Constants.MESSAGES_COLLECTION
 import com.example.chatapp.util.Constants.USERS_COLLECTION
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -33,14 +35,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserRef(): CollectionReference {
-        return Firebase.firestore.collection(USERS_COLLECTION)
+    fun provideUserStorageRepository(): UserStorageRepository {
+        val usersRef = Firebase.firestore.collection(USERS_COLLECTION)
+        return UserStorageRepositoryImpl(usersRef)
     }
 
     @Provides
     @Singleton
-    fun provideUserRepository(usersRef: CollectionReference): UserStorageRepository {
-        return UserStorageRepositoryImpl(usersRef)
+    fun provideMessageStorageRepository(): MessageStorageRepository {
+        val messagesRef = Firebase.firestore.collection(MESSAGES_COLLECTION)
+        return MessageStorageRepositoryImpl(messagesRef)
     }
 
     @Provides

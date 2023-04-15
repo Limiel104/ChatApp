@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class UserStorageRepositoryImpl @Inject constructor(
     private val usersRef: CollectionReference
-) : UserStorageRepository {
+): UserStorageRepository {
 
     override suspend fun addUser(user: User): Resource<Boolean> {
         return try {
@@ -31,7 +31,8 @@ class UserStorageRepositoryImpl @Inject constructor(
                 val response = if (snapshot != null) {
                     val users = snapshot.toObjects(User::class.java)
                     Resource.Success(users)
-                } else {
+                }
+                else {
                     Resource.Error(e!!.localizedMessage as String)
                 }
                 trySend(response)

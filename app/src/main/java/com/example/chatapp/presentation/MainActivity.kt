@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.chatapp.presentation.chat.composable.ChatScreen
 import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.presentation.login.composable.LoginScreen
 import com.example.chatapp.presentation.signup.composable.SignupScreen
