@@ -61,11 +61,8 @@ class UserListViewModel @Inject constructor(
                 when (response) {
                     is Resource.Success -> {
                         if(query != emptyString) {
-                            val filteredResponse = response.result.filter {  user ->
-                                user.firstName.contains(query,true)
-                            }
                             _userListState.value = userListState.value.copy(
-                                userList = filteredResponse
+                                userList = chatUseCases.filterUsers(query,response.result)
                             )
                         }
                         else {

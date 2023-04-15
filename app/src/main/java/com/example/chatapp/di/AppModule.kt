@@ -56,6 +56,7 @@ object AppModule {
             getCurrentUserUseCase = GetCurrentUserUseCase(authRepository),
             addUserUseCase = AddUserUseCase(userStorageRepository),
             getUsersUseCase = GetUsersUseCase(userStorageRepository),
+            filterUsers = FilterUsers(),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
