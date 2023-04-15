@@ -10,19 +10,7 @@ class FakeUserStorageRepository: UserStorageRepository {
 
     private val userList = mutableListOf<User>()
 
-    override suspend fun addUser(
-        userUID: String,
-        firstName: String,
-        lastName: String,
-        avatarURL: String
-    ): Resource<Boolean> {
-        val user = User(
-            userUID = userUID,
-            firstName = firstName,
-            lastName = lastName,
-            avatarURL = avatarURL
-        )
-
+    override suspend fun addUser(user: User): Resource<Boolean> {
         userList.add(user)
         return Resource.Success(true)
     }

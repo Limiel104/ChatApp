@@ -1,11 +1,11 @@
 package com.example.chatapp.presentation.login
 
 import com.example.chatapp.data.repository.FakeAuthRepository
+import com.example.chatapp.data.repository.FakeUserStorageRepository
+import com.example.chatapp.domain.use_case.*
 import com.example.chatapp.util.Constants.emailCorrect
-import com.example.chatapp.util.Constants.emailEmptyError
 import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Constants.passwordCorrect
-import com.example.chatapp.util.Constants.passwordEmptyError
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -16,37 +16,25 @@ class LoginViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = LoginViewModel(FakeAuthRepository())
-    }
+        val fakeAuthRepository = FakeAuthRepository()
+        val fakeUserStorageRepository = FakeUserStorageRepository()
 
-    @Test
-    fun validateEmail_isNotBlank() {
-        val email = emailCorrect
-        val result = viewModel.validateEmail(email)
-        assertThat(result.isSuccessful).isTrue()
-    }
-
-    @Test
-    fun validateEmail_isNotBlank_returnFalse() {
-        val email = emptyString
-        val result = viewModel.validateEmail(email)
-        assertThat(result.isSuccessful).isFalse()
-        assertThat(result.errorMessage).isEqualTo(emailEmptyError)
-    }
-
-    @Test
-    fun validatePassword_isNotBlank() {
-        val password = passwordCorrect
-        val result = viewModel.validatePassword(password)
-        assertThat(result.isSuccessful).isTrue()
-    }
-
-    @Test
-    fun validatePassword_isNotBlank_returnFalse() {
-        val password = emptyString
-        val result = viewModel.validatePassword(password)
-        assertThat(result.isSuccessful).isFalse()
-        assertThat(result.errorMessage).isEqualTo(passwordEmptyError)
+        viewModel = LoginViewModel(
+            ChatUseCases(
+                loginUseCase = LoginUseCase(fakeAuthRepository),
+                signupUseCase = SignupUseCase(fakeAuthRepository),
+                logoutUseCase = LogoutUseCase(fakeAuthRepository),
+                getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
+                addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
+                getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
+                filterUsersUseCase = FilterUsersUseCase(),
+                validateEmailUseCase = ValidateEmailUseCase(),
+                validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
+                validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
+                validateConfirmPasswordUseCase = ValidateConfirmPasswordUseCase(),
+                validateNameUseCase = ValidateNameUseCase()
+            )
+        )
     }
 
     @Test

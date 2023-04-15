@@ -5,8 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatapp.domain.repository.AuthRepository
-import com.example.chatapp.domain.repository.UserStorageRepository
+import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserListViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val userStorageRepository: UserStorageRepository
+    private val chatUseCases: ChatUseCases
 ): ViewModel() {
 
     private val _userListState = mutableStateOf(UserListState())
@@ -58,16 +56,13 @@ class UserListViewModel @Inject constructor(
         query: String = _userListState.value.query
     ) {
         viewModelScope.launch {
-            val currentUserUID = authRepository.currentUser!!.uid
-            userStorageRepository.getUserList(currentUserUID).collect { response ->
+            val currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
+            chatUseCases.getUsersUseCase(currentUserUID).collect { response ->
                 when (response) {
                     is Resource.Success -> {
                         if(query != emptyString) {
-                            val filteredResponse = response.result.filter {  user ->
-                                user.firstName.contains(query,true)
-                            }
                             _userListState.value = userListState.value.copy(
-                                userList = filteredResponse
+                                userList = chatUseCases.filterUsersUseCase(query,response.result)
                             )
                         }
                         else {
@@ -88,7 +83,7 @@ class UserListViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch {
-            authRepository.logout()
+            chatUseCases.logoutUseCase()
             _eventFlow.emit(UserListUiEvent.Logout)
         }
     }
