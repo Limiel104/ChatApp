@@ -2,8 +2,8 @@ package com.example.chatapp.presentation.chat.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,6 +18,9 @@ fun ChatScreen(
     navController: NavController,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
+    val messages = viewModel.chatState.value.messageList
+    val currentUserUID = viewModel.chatState.value.currentUserUID
+    
     Scaffold(
         topBar = { ChatTopBar("John Smith") },
         bottomBar = { ChatBottomBar() },
@@ -29,57 +32,19 @@ fun ChatScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
         ) {
-            Message(
-                text = "Hello Amber",
-                color = Color.LightGray,
-                padding = PaddingValues(end = 40.dp),
-                arrangement = Arrangement.Start
-            )
-
-            Message(
-                text = "How are you?",
-                color = Color.LightGray,
-                padding = PaddingValues(end = 40.dp),
-                arrangement = Arrangement.Start
-            )
-
-            Message(
-                text = "Hello John",
-                color = Color.Yellow,
-                padding = PaddingValues(start = 40.dp),
-
-                arrangement = Arrangement.End
-            )
-
-            Message(
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eros lorem, maximus ac aliquam at, eleifend in dui. Sed convallis hendrerit tincidunt. Suspendisse felis massa, tempus non venenatis quis, commodo eget sem. Praesent bibendum erat in ipsum sodales vulputate. Phasellus et diam aliquet, porta lacus vitae, placerat dui. Donec tempus orci semper lacus consectetur ultricies. Morbi consectetur feugiat nisi, at blandit ipsum lacinia eu. Donec eu lorem eu lorem rhoncus iaculis et vitae massa.",
-                color = Color.Yellow,
-                padding = PaddingValues(start = 40.dp),
-                arrangement = Arrangement.End
-            )
-
-            Message(
-                text = "Ok",
-                color = Color.LightGray,
-                padding = PaddingValues(end = 40.dp),
-                arrangement = Arrangement.Start
-            )
-
-            Message(
-                text = "Quisque eget mattis enim. Aenean ultrices leo nec metus tincidunt, eget aliquam nulla ullamcorper.",
-                color = Color.Yellow,
-                padding = PaddingValues(start = 40.dp),
-                arrangement = Arrangement.End
-            )
-
-            Message(
-                text = "Bye bye! Hope to see you soon!",
-                color = Color.Yellow,
-                padding = PaddingValues(start = 40.dp),
-                arrangement = Arrangement.End
-            )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                reverseLayout = true
+            ) {
+                itemsIndexed(messages) { _, message ->
+                    Message(
+                        text = message.text,
+                        isSendByCurrentUser = currentUserUID == message.senderUID
+                    )
+                }
+            }
         }
     }
 }

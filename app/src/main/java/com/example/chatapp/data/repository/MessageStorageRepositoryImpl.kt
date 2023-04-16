@@ -34,7 +34,7 @@ class MessageStorageRepositoryImpl @Inject constructor(
         val snapshotListener = messagesRef
             .whereIn(SENDER_UID, listOf(currentUserUID,chatParticipantUserUID))
             .whereIn(RECEIVER_UID, listOf(currentUserUID,chatParticipantUserUID))
-            .orderBy(DATE,Query.Direction.ASCENDING)
+            .orderBy(DATE,Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
                     val messages = snapshot.toObjects(Message::class.java)

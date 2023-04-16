@@ -14,26 +14,24 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Message(
     text: String,
-    color: Color,
-    padding: PaddingValues,
-    arrangement: Arrangement.Horizontal
+    isSendByCurrentUser: Boolean
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-        horizontalArrangement = arrangement
+        horizontalArrangement = if (isSendByCurrentUser) Arrangement.End else Arrangement.Start
     ) {
         Card(
             modifier = Modifier
-                .padding(5.dp,6.dp)
-                .padding(padding),
+                .padding(5.dp, 6.dp)
+                .padding(if (isSendByCurrentUser) PaddingValues(start = 40.dp) else PaddingValues(end = 40.dp)),
             shape = RoundedCornerShape(15.dp)
         ) {
             Text(
                 text = text,
                 fontSize = 14.sp,
                 modifier = Modifier
-                    .background(color)
+                    .background(if (isSendByCurrentUser) Color.Yellow else Color.LightGray)
                     .padding(7.dp)
             )
         }
