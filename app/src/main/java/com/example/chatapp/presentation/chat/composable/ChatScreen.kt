@@ -9,12 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.chatapp.presentation.chat.ChatViewModel
 
-//@Preview
 @Composable
 fun ChatScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: ChatViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = { ChatTopBar("John Smith") },

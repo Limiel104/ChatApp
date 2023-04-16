@@ -16,12 +16,12 @@ class FakeMessageStorageRepository: MessageStorageRepository {
     }
 
     override fun getMessages(
-        senderUID: String,
-        receiverUID: String
+        currentUserUID: String,
+        chatParticipantUserUID: String
     ): Flow<Resource<List<Message>>> {
         val messagesBetweenSenderAndReceiver = messageList.filter { message ->
-            (message.senderUID == senderUID && message.receiverUID == receiverUID) ||
-                    (message.senderUID == receiverUID && message.receiverUID == senderUID)
+            (message.senderUID == currentUserUID && message.receiverUID == chatParticipantUserUID) ||
+                    (message.senderUID == chatParticipantUserUID && message.receiverUID == currentUserUID)
         }.sortedBy { message ->
             message.date
         }

@@ -28,12 +28,12 @@ class MessageStorageRepositoryImpl @Inject constructor(
     }
 
     override fun getMessages(
-        senderUID: String,
-        receiverUID: String
+        currentUserUID: String,
+        chatParticipantUserUID: String
     ) = callbackFlow {
         val snapshotListener = messagesRef
-            .whereIn(SENDER_UID, listOf(senderUID,receiverUID))
-            .whereIn(RECEIVER_UID, listOf(senderUID,receiverUID))
+            .whereIn(SENDER_UID, listOf(currentUserUID,chatParticipantUserUID))
+            .whereIn(RECEIVER_UID, listOf(currentUserUID,chatParticipantUserUID))
             .orderBy(DATE,Query.Direction.ASCENDING)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {

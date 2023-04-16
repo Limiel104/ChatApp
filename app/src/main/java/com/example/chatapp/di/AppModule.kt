@@ -51,7 +51,8 @@ object AppModule {
     @Singleton
     fun provideChatUseCases(
         authRepository: AuthRepository,
-        userStorageRepository: UserStorageRepository
+        userStorageRepository: UserStorageRepository,
+        messageStorageRepository: MessageStorageRepository
     ): ChatUseCases {
         return ChatUseCases(
             loginUseCase = LoginUseCase(authRepository),
@@ -61,6 +62,8 @@ object AppModule {
             addUserUseCase = AddUserUseCase(userStorageRepository),
             getUsersUseCase = GetUsersUseCase(userStorageRepository),
             filterUsersUseCase = FilterUsersUseCase(),
+            addMessageUseCase = AddMessageUseCase(messageStorageRepository),
+            getMessagesUseCase = GetMessagesUseCase(messageStorageRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

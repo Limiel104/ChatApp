@@ -8,5 +8,5 @@ interface MessageStorageRepository {
 
     suspend fun addMessage(message: Message): Resource<Boolean>
 
-    fun getMessages(senderUID: String, receiverUID: String): Flow<Resource<List<Message>>>
+    fun getMessages(currentUserUID: String, chatParticipantUserUID: String): Flow<Resource<List<Message>>>
 }
