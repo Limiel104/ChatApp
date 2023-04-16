@@ -8,7 +8,10 @@ import kotlinx.coroutines.flow.Flow
 class GetMessagesUseCase(
     private val messageStorageRepository: MessageStorageRepository
 ) {
-    operator fun invoke(senderUID: String, receiverUID: String): Flow<Resource<List<Message>>> {
-        return messageStorageRepository.getMessages(senderUID, receiverUID)
+    operator fun invoke(
+        currentUserUID: String,
+        chatParticipantUserUID: String
+    ): Flow<Resource<List<Message>>> {
+        return messageStorageRepository.getMessages(currentUserUID, chatParticipantUserUID)
     }
 }
