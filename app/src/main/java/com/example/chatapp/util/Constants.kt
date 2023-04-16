@@ -77,4 +77,5 @@ object Constants {
     const val MESSAGES_COLLECTION: String = "messages"
     const val SENDER_UID: String = "senderUID"
     const val RECEIVER_UID: String = "receiverUID"
+    const val DATE: String = "date"
 }
