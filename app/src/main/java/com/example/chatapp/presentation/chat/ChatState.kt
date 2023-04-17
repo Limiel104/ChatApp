@@ -6,5 +6,6 @@ data class ChatState(
     val messageList: List<Message> = emptyList(),
     val currentUserUID: String = "",
     val chatParticipantUserUID: String = "",
-    val messageToSend: String = ""
+    val messageToSend: String = "",
+    val chatParticipantName: String = ""
 )

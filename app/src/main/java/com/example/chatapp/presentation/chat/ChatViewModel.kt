@@ -37,8 +37,10 @@ class ChatViewModel @Inject constructor(
             )
         }
 
+        getChatParticipantName()
+
         _chatState.value = chatState.value.copy(
-            currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
+            currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid,
         )
 
         getMessages(
@@ -110,6 +112,27 @@ class ChatViewModel @Inject constructor(
     fun goBack() {
         viewModelScope.launch {
             _eventFlow.emit(ChatUiEvent.GoBack)
+        }
+    }
+
+    fun getChatParticipantName(
+        userUID: String = _chatState.value.chatParticipantUserUID
+    ) {
+        viewModelScope.launch {
+            chatUseCases.getUserUseCase(userUID).collect { response ->
+                when(response) {
+                    is Resource.Success -> {
+                        val name = response.result[0].firstName + " " + response.result[0].lastName
+                        _chatState.value = chatState.value.copy(
+                            chatParticipantName = name
+                        )
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.i("TAG",response.message)
+                    }
+                }
+            }
         }
     }
 }

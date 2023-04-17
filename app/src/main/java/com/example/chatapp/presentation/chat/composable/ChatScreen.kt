@@ -27,6 +27,7 @@ fun ChatScreen(
     val messages = viewModel.chatState.value.messageList
     val currentUserUID = viewModel.chatState.value.currentUserUID
     val messageToSend = viewModel.chatState.value.messageToSend
+    val name = viewModel.chatState.value.chatParticipantName
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
@@ -45,7 +46,7 @@ fun ChatScreen(
     Scaffold(
         topBar = {
             ChatTopBar(
-                name = "John Smith",
+                name = name,
                 onClick = { viewModel.onEvent(ChatEvent.GoBack) }
         ) },
         bottomBar = {
