@@ -6,6 +6,7 @@ data class ChatUseCases(
     val logoutUseCase: LogoutUseCase,
     val getCurrentUserUseCase: GetCurrentUserUseCase,
     val addUserUseCase: AddUserUseCase,
+    val getUserUseCase: GetUserUseCase,
     val getUsersUseCase: GetUsersUseCase,
     val filterUsersUseCase: FilterUsersUseCase,
     val addMessageUseCase: AddMessageUseCase,

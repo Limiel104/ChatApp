@@ -60,6 +60,7 @@ object AppModule {
             logoutUseCase = LogoutUseCase(authRepository),
             getCurrentUserUseCase = GetCurrentUserUseCase(authRepository),
             addUserUseCase = AddUserUseCase(userStorageRepository),
+            getUserUseCase = GetUserUseCase(userStorageRepository),
             getUsersUseCase = GetUsersUseCase(userStorageRepository),
             filterUsersUseCase = FilterUsersUseCase(),
             addMessageUseCase = AddMessageUseCase(messageStorageRepository),

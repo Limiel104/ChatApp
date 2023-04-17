@@ -24,7 +24,26 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getUserList(currentUserUID: String) = callbackFlow {
+    override fun getUser(userUID: String) = callbackFlow {
+        val snapshotListener = usersRef
+            .whereEqualTo(USER_UID,userUID)
+            .addSnapshotListener { snapshot, e ->
+                val response = if (snapshot != null) {
+                    val user = snapshot.toObjects(User::class.java)
+                    Resource.Success(user)
+                }
+                else {
+                    Resource.Error(e!!.localizedMessage as String)
+                }
+                trySend(response)
+            }
+
+        awaitClose {
+            snapshotListener.remove()
+        }
+    }
+
+    override fun getUsers(currentUserUID: String) = callbackFlow {
         val snapshotListener = usersRef
             .whereNotEqualTo(USER_UID,currentUserUID)
             .addSnapshotListener { snapshot, e ->

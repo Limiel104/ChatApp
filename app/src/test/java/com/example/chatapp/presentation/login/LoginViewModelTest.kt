@@ -28,6 +28,7 @@ class LoginViewModelTest {
                 logoutUseCase = LogoutUseCase(fakeAuthRepository),
                 getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
                 addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
+                getUserUseCase = GetUserUseCase(fakeUserStorageRepository),
                 getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
                 filterUsersUseCase = FilterUsersUseCase(),
                 addMessageUseCase = AddMessageUseCase(fakeMessageStorageRepository),
