@@ -6,10 +6,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapp.domain.model.Message
 import com.example.chatapp.domain.use_case.ChatUseCases
+import com.example.chatapp.util.Constants.USER_UID
+import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,8 +27,11 @@ class ChatViewModel @Inject constructor(
     private val _chatState = mutableStateOf(ChatState())
     val chatState: State<ChatState> = _chatState
 
+    private val _eventFlow = MutableSharedFlow<ChatUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     init {
-        savedStateHandle.get<String>("userUID")?.let { userUID ->
+        savedStateHandle.get<String>(USER_UID)?.let { userUID ->
             _chatState.value = chatState.value.copy(
                 chatParticipantUserUID = userUID
             )
@@ -36,6 +45,29 @@ class ChatViewModel @Inject constructor(
             _chatState.value.currentUserUID,
             _chatState.value.chatParticipantUserUID
         )
+    }
+
+    fun onEvent(event: ChatEvent) {
+        when(event) {
+            is ChatEvent.EnteredMessage -> {
+                _chatState.value = chatState.value.copy(
+                    messageToSend = event.value
+                )
+            }
+            is ChatEvent.SendMessage -> {
+                val message = Message(
+                    text = _chatState.value.messageToSend,
+                    senderUID = _chatState.value.currentUserUID,
+                    receiverUID = _chatState.value.chatParticipantUserUID,
+                    date = Date()
+                )
+                addMessage(message)
+
+                _chatState.value = chatState.value.copy(
+                    messageToSend = emptyString
+                )
+            }
+        }
     }
 
     fun getMessages(currentUserUID: String, chatParticipantUserUID: String) {
@@ -55,6 +87,19 @@ class ChatViewModel @Inject constructor(
                         Log.i("TAG", response.result.toString())
                     }
                 }
+            }
+        }
+    }
+
+    fun addMessage(message: Message) {
+        viewModelScope.launch {
+            when(val addMessageResponse = chatUseCases.addMessageUseCase(message)) {
+                is Resource.Error -> {
+                    Log.i("TAG","Error while adding new message")
+                    val errorMessage = addMessageResponse.message
+                    _eventFlow.emit(ChatUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {}
             }
         }
     }
