@@ -35,12 +35,19 @@ fun ChatScreen(
                 is ChatUiEvent.ShowErrorMessage -> {
                     Toast.makeText(context,event.message,Toast.LENGTH_SHORT).show()
                 }
+                is ChatUiEvent.GoBack -> {
+                    navController.popBackStack()
+                }
             }
         }
     }
     
     Scaffold(
-        topBar = { ChatTopBar("John Smith") },
+        topBar = {
+            ChatTopBar(
+                name = "John Smith",
+                onClick = { viewModel.onEvent(ChatEvent.GoBack) }
+        ) },
         bottomBar = {
             ChatBottomBar(
                 message = messageToSend,

@@ -23,7 +23,8 @@ import com.example.chatapp.R
 
 @Composable
 fun ChatTopBar(
-    name: String
+    name: String,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -32,7 +33,7 @@ fun ChatTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = { onClick() }
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,

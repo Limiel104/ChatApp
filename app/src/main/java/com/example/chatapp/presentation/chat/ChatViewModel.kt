@@ -67,6 +67,9 @@ class ChatViewModel @Inject constructor(
                     messageToSend = emptyString
                 )
             }
+            is ChatEvent.GoBack -> {
+                goBack()
+            }
         }
     }
 
@@ -101,6 +104,12 @@ class ChatViewModel @Inject constructor(
                 }
                 else -> {}
             }
+        }
+    }
+
+    fun goBack() {
+        viewModelScope.launch {
+            _eventFlow.emit(ChatUiEvent.GoBack)
         }
     }
 }
