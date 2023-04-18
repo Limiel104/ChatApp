@@ -19,7 +19,15 @@ class MessageStorageRepositoryImpl @Inject constructor(
 
     override suspend fun addMessage(message: Message): Resource<Boolean> {
         return try {
-            messagesRef.document().set(message).await()
+            val messageId = messagesRef.document().id
+            val newMessage = Message(
+                text = message.text,
+                senderUID = message.senderUID,
+                receiverUID = message.receiverUID,
+                date = message.date,
+                messageId = messageId
+            )
+            messagesRef.document(messageId).set(newMessage).await()
             Resource.Success(true)
         }
         catch (e: Exception) {
