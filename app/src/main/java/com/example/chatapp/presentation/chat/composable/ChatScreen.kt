@@ -28,6 +28,7 @@ fun ChatScreen(
     val currentUserUID = viewModel.chatState.value.currentUserUID
     val messageToSend = viewModel.chatState.value.messageToSend
     val name = viewModel.chatState.value.chatParticipantName
+    val isDialogActivated = viewModel.chatState.value.isDialogActivated
     val context = LocalContext.current
 
     LaunchedEffect(key1 = true) {
@@ -72,10 +73,18 @@ fun ChatScreen(
                 itemsIndexed(messages) { _, message ->
                     Message(
                         text = message.text,
-                        isSendByCurrentUser = currentUserUID == message.senderUID
+                        isSendByCurrentUser = currentUserUID == message.senderUID,
+                        onClick = { viewModel.onEvent(ChatEvent.ClickedMessage(message)) }
                     )
                 }
             }
+        }
+
+        if(isDialogActivated){
+            DeleteDialog(
+                onDelete = { viewModel.onEvent(ChatEvent.DeleteMessage) },
+                onDismiss = { viewModel.onEvent(ChatEvent.DismissDialog) }
+            )
         }
     }
 }

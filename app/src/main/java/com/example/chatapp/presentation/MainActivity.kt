@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.chatapp.presentation.chat.composable.ChatScreen
-import com.example.chatapp.presentation.composable.*
+import com.example.chatapp.presentation.common.composable.TransparentSystemBar
 import com.example.chatapp.presentation.login.composable.LoginScreen
 import com.example.chatapp.presentation.signup.composable.SignupScreen
 import com.example.chatapp.presentation.user_list.composable.UserListScreen

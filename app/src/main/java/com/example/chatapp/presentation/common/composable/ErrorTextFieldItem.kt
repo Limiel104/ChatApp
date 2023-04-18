@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.composable
+package com.example.chatapp.presentation.common.composable
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text

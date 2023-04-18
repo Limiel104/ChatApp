@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.chat.composable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -14,7 +15,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Message(
     text: String,
-    isSendByCurrentUser: Boolean
+    isSendByCurrentUser: Boolean,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -24,6 +26,7 @@ fun Message(
         Card(
             modifier = Modifier
                 .padding(5.dp, 6.dp)
+                .clickable { onClick() }
                 .padding(if (isSendByCurrentUser) PaddingValues(start = 40.dp) else PaddingValues(end = 40.dp)),
             shape = RoundedCornerShape(15.dp)
         ) {

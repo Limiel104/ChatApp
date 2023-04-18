@@ -7,5 +7,7 @@ data class ChatState(
     val currentUserUID: String = "",
     val chatParticipantUserUID: String = "",
     val messageToSend: String = "",
-    val chatParticipantName: String = ""
+    val chatParticipantName: String = "",
+    val isDialogActivated: Boolean = false,
+    val selectedMessage: Message? = null
 )

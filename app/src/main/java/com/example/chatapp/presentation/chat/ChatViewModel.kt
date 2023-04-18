@@ -72,6 +72,25 @@ class ChatViewModel @Inject constructor(
             is ChatEvent.GoBack -> {
                 goBack()
             }
+            is ChatEvent.ClickedMessage -> {
+                _chatState.value = chatState.value.copy(
+                    isDialogActivated = true,
+                    selectedMessage = event.value
+                )
+            }
+            is ChatEvent.DismissDialog -> {
+                _chatState.value = chatState.value.copy(
+                    isDialogActivated = false,
+                    selectedMessage = null
+                )
+            }
+            is ChatEvent.DeleteMessage -> {
+                Log.i("TAG","message to delete: ${_chatState.value.selectedMessage!!.text}")
+                _chatState.value = chatState.value.copy(
+                    isDialogActivated = false,
+                    selectedMessage = null
+                )
+            }
         }
     }
 
