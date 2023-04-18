@@ -33,6 +33,7 @@ class LoginViewModelTest {
                 filterUsersUseCase = FilterUsersUseCase(),
                 addMessageUseCase = AddMessageUseCase(fakeMessageStorageRepository),
                 getMessagesUseCase = GetMessagesUseCase(fakeMessageStorageRepository),
+                deleteMessageUseCase = DeleteMessageUseCase(fakeMessageStorageRepository),
                 validateEmailUseCase = ValidateEmailUseCase(),
                 validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
                 validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

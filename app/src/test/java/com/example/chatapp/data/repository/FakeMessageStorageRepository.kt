@@ -28,4 +28,13 @@ class FakeMessageStorageRepository: MessageStorageRepository {
 
         return flow { emit(Resource.Success(messagesBetweenSenderAndReceiver)) }
     }
+
+    override suspend fun deleteMessage(messageId: String): Resource<Boolean> {
+        val messageToDelete = messageList.filter { message ->
+            message.messageId == messageId
+        }[0]
+        messageList.remove(messageToDelete)
+
+        return Resource.Success(true)
+    }
 }

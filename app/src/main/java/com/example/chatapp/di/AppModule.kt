@@ -65,6 +65,7 @@ object AppModule {
             filterUsersUseCase = FilterUsersUseCase(),
             addMessageUseCase = AddMessageUseCase(messageStorageRepository),
             getMessagesUseCase = GetMessagesUseCase(messageStorageRepository),
+            deleteMessageUseCase = DeleteMessageUseCase(messageStorageRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

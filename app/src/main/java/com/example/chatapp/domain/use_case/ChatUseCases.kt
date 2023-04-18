@@ -11,6 +11,7 @@ data class ChatUseCases(
     val filterUsersUseCase: FilterUsersUseCase,
     val addMessageUseCase: AddMessageUseCase,
     val getMessagesUseCase: GetMessagesUseCase,
+    val deleteMessageUseCase: DeleteMessageUseCase,
     val validateEmailUseCase: ValidateEmailUseCase,
     val validateLoginPasswordUseCase: ValidateLoginPasswordUseCase,
     val validateSignupPasswordUseCase: ValidateSignupPasswordUseCase,

@@ -58,4 +58,14 @@ class MessageStorageRepositoryImpl @Inject constructor(
             snapshotListener.remove()
         }
     }
+
+    override suspend fun deleteMessage(messageId: String): Resource<Boolean> {
+         return try {
+             messagesRef.document(messageId).delete().await()
+             Resource.Success(true)
+         }
+         catch (e: Exception) {
+             Resource.Error(e.localizedMessage as String)
+         }
+    }
 }

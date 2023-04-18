@@ -85,7 +85,7 @@ class ChatViewModel @Inject constructor(
                 )
             }
             is ChatEvent.DeleteMessage -> {
-                Log.i("TAG","message to delete: ${_chatState.value.selectedMessage!!.text}")
+                deleteMessage(_chatState.value.selectedMessage!!.messageId)
                 _chatState.value = chatState.value.copy(
                     isDialogActivated = false,
                     selectedMessage = null
@@ -151,6 +151,19 @@ class ChatViewModel @Inject constructor(
                         Log.i("TAG",response.message)
                     }
                 }
+            }
+        }
+    }
+
+    fun deleteMessage(messageId: String) {
+        viewModelScope.launch {
+            when(val deleteResponse= chatUseCases.deleteMessageUseCase(messageId)) {
+                is Resource.Error -> {
+                    Log.i("TAG","Error while adding new user")
+                    val errorMessage = deleteResponse.message
+                    _eventFlow.emit(ChatUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {}
             }
         }
     }
