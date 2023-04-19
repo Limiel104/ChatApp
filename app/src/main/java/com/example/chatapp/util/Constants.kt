@@ -48,7 +48,8 @@ object Constants {
     const val lastNameHasDigit: String = "Smith 3rd"
     const val lastNameHasSpecialChar: String = "Smith's"
     const val userUIDCorrect: String = "h456uv456OV456n4565q1456Q7E2"
-    const val avatarURLCorrect = "avatarUrl"
+    const val avatarURLCorrect: String = "avatarUrl"
+    const val messageCorrect: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac mollis erat. Morbi sit amet ligula quis mauris scelerisque volutpat ut at mi. Maecenas et dolor luctus lacus condimentum pharetra."
 
     const val user1UID: String = "1234567321890"
     const val user1FirstName: String = "Mike"
@@ -73,4 +74,9 @@ object Constants {
 
     const val USERS_COLLECTION: String = "users"
     const val USER_UID: String = "userUID"
+
+    const val MESSAGES_COLLECTION: String = "messages"
+    const val SENDER_UID: String = "senderUID"
+    const val RECEIVER_UID: String = "receiverUID"
+    const val DATE: String = "date"
 }

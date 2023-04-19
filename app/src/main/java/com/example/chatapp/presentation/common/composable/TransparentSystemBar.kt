@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.composable
+package com.example.chatapp.presentation.common.composable
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
