@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val chatUseCases: ChatUseCases
-) : ViewModel() {
+): ViewModel() {
 
     private val _loginState = mutableStateOf(LoginState())
     val loginState: State<LoginState> = _loginState

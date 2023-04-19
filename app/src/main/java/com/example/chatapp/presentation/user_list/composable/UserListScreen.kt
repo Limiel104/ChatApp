@@ -105,7 +105,9 @@ fun UserListScreen(
                 UserListItem(
                     user = user,
                     onItemClick = {
-                        navController.navigate(Screen.ChatScreen.route)
+                        navController.navigate(Screen.ChatScreen.route + "userUID=${ user.userUID }")
+                        Log.i("TAG",user.userUID)
+                        Log.i("TAG",user.firstName + " " + user.lastName)
                     }
                 )
             }
