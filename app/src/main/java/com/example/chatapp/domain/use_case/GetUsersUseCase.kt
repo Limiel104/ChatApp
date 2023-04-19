@@ -9,6 +9,6 @@ class GetUsersUseCase(
     private val userStorageRepository: UserStorageRepository
 ) {
     operator fun invoke(currentUserUID: String): Flow<Resource<List<User>>> {
-        return userStorageRepository.getUsers(currentUserUID)
+        return userStorageRepository.getUserList(currentUserUID)
     }
 }

@@ -27,7 +27,7 @@ import com.example.chatapp.presentation.login.LoginUiEvent
 import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
-import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
+import com.example.chatapp.presentation.composable.ErrorTextFieldItem
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
 import com.example.chatapp.util.Constants.EMAIL_TF

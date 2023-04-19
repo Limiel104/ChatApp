@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.chat.composable
+package com.example.chatapp.presentation.composable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,8 +23,7 @@ import com.example.chatapp.R
 
 @Composable
 fun ChatTopBar(
-    name: String,
-    onClick: () -> Unit
+    name: String
 ) {
     Row(
         modifier = Modifier
@@ -33,7 +32,7 @@ fun ChatTopBar(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = { onClick() }
+            onClick = { /*TODO*/ }
         ) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,

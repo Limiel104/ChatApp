@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class UserStorageRepositoryImpl @Inject constructor(
     private val usersRef: CollectionReference
-): UserStorageRepository {
+) : UserStorageRepository {
 
     override suspend fun addUser(user: User): Resource<Boolean> {
         return try {
@@ -24,34 +24,14 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getUser(userUID: String) = callbackFlow {
-        val snapshotListener = usersRef
-            .whereEqualTo(USER_UID,userUID)
-            .addSnapshotListener { snapshot, e ->
-                val response = if (snapshot != null) {
-                    val user = snapshot.toObjects(User::class.java)
-                    Resource.Success(user)
-                }
-                else {
-                    Resource.Error(e!!.localizedMessage as String)
-                }
-                trySend(response)
-            }
-
-        awaitClose {
-            snapshotListener.remove()
-        }
-    }
-
-    override fun getUsers(currentUserUID: String) = callbackFlow {
+    override fun getUserList(currentUserUID: String) = callbackFlow {
         val snapshotListener = usersRef
             .whereNotEqualTo(USER_UID,currentUserUID)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
                     val users = snapshot.toObjects(User::class.java)
                     Resource.Success(users)
-                }
-                else {
+                } else {
                     Resource.Error(e!!.localizedMessage as String)
                 }
                 trySend(response)
