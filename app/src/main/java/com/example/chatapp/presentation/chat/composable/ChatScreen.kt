@@ -8,16 +8,19 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.chatapp.R
 import com.example.chatapp.presentation.chat.ChatEvent
 import com.example.chatapp.presentation.chat.ChatUiEvent
 import com.example.chatapp.presentation.chat.ChatViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChatScreen(
@@ -30,6 +33,8 @@ fun ChatScreen(
     val name = viewModel.chatState.value.chatParticipantName
     val isDialogActivated = viewModel.chatState.value.isDialogActivated
     val context = LocalContext.current
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -56,6 +61,7 @@ fun ChatScreen(
                 onValueChange = { viewModel.onEvent(ChatEvent.EnteredMessage(it)) },
                 onClick = { viewModel.onEvent(ChatEvent.SendMessage) }
             ) },
+        scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
@@ -82,7 +88,18 @@ fun ChatScreen(
 
         if(isDialogActivated){
             DeleteDialog(
-                onDelete = { viewModel.onEvent(ChatEvent.DeleteMessage) },
+                onDelete = {
+                    viewModel.onEvent(ChatEvent.DeleteMessage)
+                    scope.launch {
+                        val result = scaffoldState.snackbarHostState.showSnackbar(
+                            message = context.resources.getString(R.string.message_deleted),
+                            actionLabel = context.resources.getString(R.string.undo)
+                        )
+                        if(result == SnackbarResult.ActionPerformed) {
+                            viewModel.onEvent(ChatEvent.RestoreMessage)
+                        }
+                    }
+                },
                 onDismiss = { viewModel.onEvent(ChatEvent.DismissDialog) }
             )
         }

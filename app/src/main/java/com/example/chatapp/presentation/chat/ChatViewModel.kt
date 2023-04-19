@@ -27,6 +27,8 @@ class ChatViewModel @Inject constructor(
     private val _chatState = mutableStateOf(ChatState())
     val chatState: State<ChatState> = _chatState
 
+    private var deletedMessage: Message? = null
+
     private val _eventFlow = MutableSharedFlow<ChatUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
@@ -85,11 +87,16 @@ class ChatViewModel @Inject constructor(
                 )
             }
             is ChatEvent.DeleteMessage -> {
+                deletedMessage = _chatState.value.selectedMessage
                 deleteMessage(_chatState.value.selectedMessage!!.messageId)
                 _chatState.value = chatState.value.copy(
                     isDialogActivated = false,
                     selectedMessage = null
                 )
+            }
+            is ChatEvent.RestoreMessage -> {
+                addMessage(deletedMessage!!)
+                deletedMessage = null
             }
         }
     }

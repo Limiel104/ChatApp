@@ -9,4 +9,5 @@ sealed class ChatEvent {
     data class ClickedMessage(val value: Message): ChatEvent()
     object DismissDialog: ChatEvent()
     object DeleteMessage: ChatEvent()
+    object RestoreMessage: ChatEvent()
 }
