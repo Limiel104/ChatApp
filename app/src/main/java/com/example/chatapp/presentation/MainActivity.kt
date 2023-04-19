@@ -6,13 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.chatapp.presentation.chat.composable.ChatScreen
-import com.example.chatapp.presentation.common.composable.TransparentSystemBar
+import com.example.chatapp.presentation.composable.*
 import com.example.chatapp.presentation.login.composable.LoginScreen
 import com.example.chatapp.presentation.signup.composable.SignupScreen
 import com.example.chatapp.presentation.user_list.composable.UserListScreen
@@ -52,14 +49,7 @@ class MainActivity : ComponentActivity() {
                             UserListScreen(navController = navController)
                         }
                         composable(
-                            route = Screen.ChatScreen.route + "userUID={userUID}",
-                            arguments = listOf(
-                                navArgument(
-                                    name = "userUID"
-                                ) {
-                                    type = NavType.StringType
-                                }
-                            )
+                            route = Screen.ChatScreen.route
                         ) {
                             ChatScreen(navController = navController)
                         }

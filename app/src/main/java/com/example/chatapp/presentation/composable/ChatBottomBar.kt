@@ -1,4 +1,4 @@
-package com.example.chatapp.presentation.chat.composable
+package com.example.chatapp.presentation.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -16,26 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.example.chatapp.R
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChatBottomBar(
-    message: String,
-    onValueChange: (String) -> Unit,
-    onClick: () -> Unit
-) {
+fun ChatBottomBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = message,
-            placeholder = { Text(stringResource(id = R.string.message_placeholder)) },
-            onValueChange = { onValueChange(it) },
+            value = "",
+            placeholder = { Text("Aa") },
+            onValueChange = { /*TODO*/ },
             modifier = Modifier
                 .weight(5f)
         )
@@ -43,10 +37,9 @@ fun ChatBottomBar(
         Spacer(modifier = Modifier.width(10.dp))
 
         IconButton(
-            onClick = { onClick() },
+            onClick = { /*TODO*/ },
             modifier = Modifier
-                .weight(1f)
-                .clip(CircleShape)
+                .weight(1f).clip(CircleShape)
                 .background(Color.LightGray)
 
         ) {

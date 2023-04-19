@@ -15,17 +15,10 @@ class FakeUserStorageRepository: UserStorageRepository {
         return Resource.Success(true)
     }
 
-    override fun getUser(userUID: String): Flow<Resource<List<User>>> {
-        val user = userList.filter { user ->
-            user.userUID == userUID
-        }
-        return flow{ emit(Resource.Success(user)) }
-    }
-
-    override fun getUsers(currentUserUID: String): Flow<Resource<List<User>>> {
-        val usersWithoutCurrentUser = userList.filter { user ->
+    override fun getUserList(currentUserUID: String): Flow<Resource<List<User>>> {
+        val userListWithoutCurrentUser = userList.filter { user ->
             user.userUID != currentUserUID
         }
-        return flow{ emit(Resource.Success(usersWithoutCurrentUser)) }
+        return flow{ emit(Resource.Success(userListWithoutCurrentUser)) }
     }
 }

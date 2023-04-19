@@ -22,7 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
-import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
+import com.example.chatapp.presentation.composable.ErrorTextFieldItem
 import com.example.chatapp.presentation.signup.SignupEvent
 import com.example.chatapp.presentation.signup.SignupUiEvent
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR

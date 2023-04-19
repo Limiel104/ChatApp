@@ -1,7 +1,6 @@
 package com.example.chatapp.presentation.login
 
 import com.example.chatapp.data.repository.FakeAuthRepository
-import com.example.chatapp.data.repository.FakeMessageStorageRepository
 import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.use_case.*
 import com.example.chatapp.util.Constants.emailCorrect
@@ -19,7 +18,6 @@ class LoginViewModelTest {
     fun setUp() {
         val fakeAuthRepository = FakeAuthRepository()
         val fakeUserStorageRepository = FakeUserStorageRepository()
-        val fakeMessageStorageRepository = FakeMessageStorageRepository()
 
         viewModel = LoginViewModel(
             ChatUseCases(
@@ -28,12 +26,8 @@ class LoginViewModelTest {
                 logoutUseCase = LogoutUseCase(fakeAuthRepository),
                 getCurrentUserUseCase = GetCurrentUserUseCase(fakeAuthRepository),
                 addUserUseCase = AddUserUseCase(fakeUserStorageRepository),
-                getUserUseCase = GetUserUseCase(fakeUserStorageRepository),
                 getUsersUseCase = GetUsersUseCase(fakeUserStorageRepository),
                 filterUsersUseCase = FilterUsersUseCase(),
-                addMessageUseCase = AddMessageUseCase(fakeMessageStorageRepository),
-                getMessagesUseCase = GetMessagesUseCase(fakeMessageStorageRepository),
-                deleteMessageUseCase = DeleteMessageUseCase(fakeMessageStorageRepository),
                 validateEmailUseCase = ValidateEmailUseCase(),
                 validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
                 validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
