@@ -26,7 +26,11 @@ fun Message(
         Card(
             modifier = Modifier
                 .padding(5.dp, 6.dp)
-                .clickable { onClick() }
+                .clickable {
+                    if(isSendByCurrentUser) {
+                        onClick()
+                    }
+                }
                 .padding(if (isSendByCurrentUser) PaddingValues(start = 40.dp) else PaddingValues(end = 40.dp)),
             shape = RoundedCornerShape(15.dp)
         ) {
