@@ -103,7 +103,7 @@ fun UserListItemPreview() {
             userUID = "1234567890",
             firstName = "John",
             lastName = "Smith",
-            avatarURL = "url"
+            profilePictureUrl = "url"
         )
 
         UserListItem(user = user,{})

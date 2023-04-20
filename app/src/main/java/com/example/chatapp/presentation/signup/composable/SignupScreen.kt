@@ -2,6 +2,8 @@ package com.example.chatapp.presentation.signup.composable
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -28,6 +30,7 @@ import com.example.chatapp.presentation.signup.SignupUiEvent
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
+import com.example.chatapp.util.Constants.DEVICE_IMAGES
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
 import com.example.chatapp.util.Constants.EMAIL_TF
 import com.example.chatapp.util.Constants.FIRST_NAME_ERROR_TF
@@ -59,6 +62,11 @@ fun SignupScreen(
     val lastNameError = viewModel.signupState.value.lastNameError
     val isLoading = viewModel.signupState.value.signupResponse == Resource.Loading
     val context = LocalContext.current
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { imageUri ->
+        imageUri?.let {
+            viewModel.onEvent(SignupEvent.SelectedProfilePicture(imageUri))
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -70,7 +78,7 @@ fun SignupScreen(
                     }
                 }
                 is SignupUiEvent.ShowErrorMessage -> {
-                    Toast.makeText(context,event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -201,6 +209,23 @@ fun SignupScreen(
                 ErrorTextFieldItem(
                     errorMessage = lastNameError,
                     testTag = LAST_NAME_ERROR_TF
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(Color.Black),
+                onClick = {
+                    galleryLauncher.launch(DEVICE_IMAGES)
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.choose_picture),
+                    color = Color.White,
+                    modifier = Modifier.padding(7.dp)
                 )
             }
         }
