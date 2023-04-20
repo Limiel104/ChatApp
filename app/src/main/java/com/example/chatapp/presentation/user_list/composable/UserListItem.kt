@@ -45,7 +45,7 @@ fun UserListItem(
             AsyncImage(
                 model = ImageRequest
                     .Builder(LocalContext.current)
-                    .data(R.drawable.ic_launcher_background)
+                    .data(user.profilePictureUrl)
                     .crossfade(true)
                     .placeholder(R.drawable.ic_person)
                     .build(),

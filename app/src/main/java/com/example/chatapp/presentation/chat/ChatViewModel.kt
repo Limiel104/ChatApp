@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
             )
         }
 
-        getChatParticipantName()
+        getChatParticipantUserData()
 
         _chatState.value = chatState.value.copy(
             currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid,
@@ -141,7 +141,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatParticipantName(
+    fun getChatParticipantUserData(
         userUID: String = _chatState.value.chatParticipantUserUID
     ) {
         viewModelScope.launch {
@@ -150,7 +150,8 @@ class ChatViewModel @Inject constructor(
                     is Resource.Success -> {
                         val name = response.result[0].firstName + " " + response.result[0].lastName
                         _chatState.value = chatState.value.copy(
-                            chatParticipantName = name
+                            chatParticipantName = name,
+                            profilePictureUrl = response.result[0].profilePictureUrl
                         )
                     }
                     is Resource.Loading -> {}

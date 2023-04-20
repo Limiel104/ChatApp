@@ -31,6 +31,7 @@ fun ChatScreen(
     val currentUserUID = viewModel.chatState.value.currentUserUID
     val messageToSend = viewModel.chatState.value.messageToSend
     val name = viewModel.chatState.value.chatParticipantName
+    val profilePictureUrl = viewModel.chatState.value.profilePictureUrl
     val isDialogActivated = viewModel.chatState.value.isDialogActivated
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
@@ -53,6 +54,7 @@ fun ChatScreen(
         topBar = {
             ChatTopBar(
                 name = name,
+                profilePictureUrl = profilePictureUrl,
                 onClick = { viewModel.onEvent(ChatEvent.GoBack) }
         ) },
         bottomBar = {
