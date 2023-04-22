@@ -8,6 +8,6 @@ sealed class SignupEvent {
     data class EnteredConfirmPassword(val value: String): SignupEvent()
     data class EnteredFirstName(val value: String): SignupEvent()
     data class EnteredLastName(val value: String): SignupEvent()
-    data class SelectedProfilePicture(val value: Uri): SignupEvent()
+    data class SelectedProfilePicture(val value: Uri?): SignupEvent()
     object Signup: SignupEvent()
 }

@@ -22,6 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
@@ -62,9 +66,19 @@ fun SignupScreen(
     val lastNameError = viewModel.signupState.value.lastNameError
     val isLoading = viewModel.signupState.value.signupResponse == Resource.Loading
     val context = LocalContext.current
+    val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        viewModel.onEvent(SignupEvent.SelectedProfilePicture(result.uriContent))
+    }
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { imageUri ->
         imageUri?.let {
-            viewModel.onEvent(SignupEvent.SelectedProfilePicture(imageUri))
+            val cropImageOptions = CropImageOptions(
+                cropShape = CropImageView.CropShape.OVAL,
+                maxCropResultWidth = 1500,
+                maxCropResultHeight = 1500,
+                fixAspectRatio = true
+            )
+            val cropOptions = CropImageContractOptions(imageUri, cropImageOptions)
+            imageCropLauncher.launch(cropOptions)
         }
     }
 

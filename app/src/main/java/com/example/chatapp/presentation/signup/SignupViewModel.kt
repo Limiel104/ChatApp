@@ -55,7 +55,7 @@ class SignupViewModel @Inject constructor(
             }
             is SignupEvent.SelectedProfilePicture -> {
                 _signupState.value = signupState.value.copy(
-                    profilePictureUri = event.value
+                    profilePictureUri = event.value!!
                 )
             }
             is SignupEvent.Signup -> {
