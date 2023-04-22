@@ -31,7 +31,11 @@ class UserListViewModel @Inject constructor(
 
     init {
         Log.i("TAG", "UserListViewModel")
-        getUsers()
+        _userListState.value = userListState.value.copy(
+            currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
+        )
+        getUsers(_userListState.value.currentUserUID)
+        getCurrentUserProfilePictureUrl(_userListState.value.currentUserUID)
     }
 
     fun onEvent(event: UserListEvent) {
@@ -43,7 +47,7 @@ class UserListViewModel @Inject constructor(
                 searchQueryJob?.cancel()
                 searchQueryJob = viewModelScope.launch {
                     delay(500L)
-                    getUsers()
+                    getUsers(_userListState.value.currentUserUID)
                 }
             }
             is UserListEvent.Logout -> {
@@ -53,10 +57,10 @@ class UserListViewModel @Inject constructor(
     }
 
     fun getUsers(
+        currentUserUID: String,
         query: String = _userListState.value.query
     ) {
         viewModelScope.launch {
-            val currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
             chatUseCases.getUsersUseCase(currentUserUID).collect { response ->
                 when (response) {
                     is Resource.Success -> {
@@ -71,6 +75,24 @@ class UserListViewModel @Inject constructor(
                             )
                         }
 
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.i("TAG",response.message)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getCurrentUserProfilePictureUrl(currentUserUID: String) {
+        viewModelScope.launch {
+            chatUseCases.getUserUseCase(currentUserUID).collect { response ->
+                when(response) {
+                    is Resource.Success -> {
+                        _userListState.value = userListState.value.copy(
+                            profilePicture = response.result[0].profilePictureUrl
+                        )
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
