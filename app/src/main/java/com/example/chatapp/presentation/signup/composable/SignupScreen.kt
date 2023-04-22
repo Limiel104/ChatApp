@@ -66,9 +66,11 @@ fun SignupScreen(
     val lastNameError = viewModel.signupState.value.lastNameError
     val isLoading = viewModel.signupState.value.signupResponse == Resource.Loading
     val context = LocalContext.current
+
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         viewModel.onEvent(SignupEvent.SelectedProfilePicture(result.uriContent))
     }
+
     val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { imageUri ->
         imageUri?.let {
             val cropImageOptions = CropImageOptions(
@@ -232,9 +234,7 @@ fun SignupScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color.Black),
-                onClick = {
-                    galleryLauncher.launch(DEVICE_IMAGES)
-                }
+                onClick = { galleryLauncher.launch(DEVICE_IMAGES) }
             ) {
                 Text(
                     text = stringResource(id = R.string.choose_picture),

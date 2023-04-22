@@ -27,6 +27,7 @@ fun UserListScreen(
     val userList = viewModel.userListState.value.userList
     val query = viewModel.userListState.value.query
     val profilePictureUrl = viewModel.userListState.value.profilePicture
+    val currentUserUID = viewModel.userListState.value.currentUserUID
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -47,7 +48,8 @@ fun UserListScreen(
                 query = query,
                 profilePictureUrl = profilePictureUrl,
                 onValueChange = { viewModel.onEvent(UserListEvent.OnQueryChange(it)) },
-                onClick = { viewModel.onEvent(UserListEvent.Logout) }
+                onClick = { viewModel.onEvent(UserListEvent.Logout) },
+                onImageClick = { navController.navigate(Screen.UserProfileScreen.route+ "userUID=$currentUserUID") }
             )
         },
         modifier = Modifier

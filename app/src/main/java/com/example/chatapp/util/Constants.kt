@@ -90,4 +90,5 @@ object Constants {
     const val Search: String = "Search"
     const val Logout: String = "Logout"
     const val UserImage: String = "User image"
+    const val GoBack: String = "Go back"
 }

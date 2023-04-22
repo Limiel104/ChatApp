@@ -16,6 +16,7 @@ import com.example.chatapp.presentation.common.composable.TransparentSystemBar
 import com.example.chatapp.presentation.login.composable.LoginScreen
 import com.example.chatapp.presentation.signup.composable.SignupScreen
 import com.example.chatapp.presentation.user_list.composable.UserListScreen
+import com.example.chatapp.presentation.user_profile.composable.UserProfileScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,6 +63,18 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             ChatScreen(navController = navController)
+                        }
+                        composable(
+                            route = Screen.UserProfileScreen.route + "userUID={userUID}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "userUID"
+                                ) {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) {
+                            UserProfileScreen(navController = navController)
                         }
                     }
                 }

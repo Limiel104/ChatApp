@@ -20,4 +20,6 @@
     <string name="undo">Undo</string>
     <string name="choose_picture">"Choose profile picture"</string>
     <string name="search">Search …</string>
+    <string name="edit_profile_info">Edit Profile Info</string>
+    <string name="save">Save</string>
 </resources>
