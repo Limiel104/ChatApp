@@ -103,7 +103,12 @@ class SignupViewModel @Inject constructor(
                         firstName = firstName,
                         lastName = lastName
                     )
-                    addProfilePicture(user, imageUri)
+                    if(imageUri == Uri.EMPTY) {
+                        addUser(user, Uri.EMPTY)
+                    }
+                    else {
+                        addProfilePicture(user, imageUri)
+                    }
                 }
                 is Resource.Error -> {
                     val errorMessage = signupResponse.message
