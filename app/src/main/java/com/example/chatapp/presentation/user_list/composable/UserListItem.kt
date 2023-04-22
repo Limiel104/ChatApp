@@ -45,7 +45,7 @@ fun UserListItem(
             AsyncImage(
                 model = ImageRequest
                     .Builder(LocalContext.current)
-                    .data(R.drawable.ic_launcher_background)
+                    .data(user.profilePictureUrl)
                     .crossfade(true)
                     .placeholder(R.drawable.ic_person)
                     .build(),
@@ -103,7 +103,7 @@ fun UserListItemPreview() {
             userUID = "1234567890",
             firstName = "John",
             lastName = "Smith",
-            avatarURL = "url"
+            profilePictureUrl = "url"
         )
 
         UserListItem(user = user,{})

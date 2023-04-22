@@ -74,9 +74,15 @@ object Constants {
 
     const val USERS_COLLECTION: String = "users"
     const val USER_UID: String = "userUID"
+    const val FIRST_NAME: String = "firstName"
+    const val LAST_NAME: String = "lastName"
+    const val PROFILE_PICTURE_URL: String = "profilePictureUrl"
 
     const val MESSAGES_COLLECTION: String = "messages"
     const val SENDER_UID: String = "senderUID"
     const val RECEIVER_UID: String = "receiverUID"
     const val DATE: String = "date"
+
+    const val IMAGES: String = "images"
+    const val DEVICE_IMAGES: String = "image/*"
 }

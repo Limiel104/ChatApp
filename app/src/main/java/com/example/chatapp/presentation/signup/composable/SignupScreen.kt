@@ -2,6 +2,8 @@ package com.example.chatapp.presentation.signup.composable
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
@@ -28,6 +34,7 @@ import com.example.chatapp.presentation.signup.SignupUiEvent
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
+import com.example.chatapp.util.Constants.DEVICE_IMAGES
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
 import com.example.chatapp.util.Constants.EMAIL_TF
 import com.example.chatapp.util.Constants.FIRST_NAME_ERROR_TF
@@ -59,6 +66,21 @@ fun SignupScreen(
     val lastNameError = viewModel.signupState.value.lastNameError
     val isLoading = viewModel.signupState.value.signupResponse == Resource.Loading
     val context = LocalContext.current
+    val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
+        viewModel.onEvent(SignupEvent.SelectedProfilePicture(result.uriContent))
+    }
+    val galleryLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { imageUri ->
+        imageUri?.let {
+            val cropImageOptions = CropImageOptions(
+                cropShape = CropImageView.CropShape.OVAL,
+                maxCropResultWidth = 1500,
+                maxCropResultHeight = 1500,
+                fixAspectRatio = true
+            )
+            val cropOptions = CropImageContractOptions(imageUri, cropImageOptions)
+            imageCropLauncher.launch(cropOptions)
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
@@ -70,7 +92,7 @@ fun SignupScreen(
                     }
                 }
                 is SignupUiEvent.ShowErrorMessage -> {
-                    Toast.makeText(context,event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -201,6 +223,23 @@ fun SignupScreen(
                 ErrorTextFieldItem(
                     errorMessage = lastNameError,
                     testTag = LAST_NAME_ERROR_TF
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(Color.Black),
+                onClick = {
+                    galleryLauncher.launch(DEVICE_IMAGES)
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.choose_picture),
+                    color = Color.White,
+                    modifier = Modifier.padding(7.dp)
                 )
             }
         }

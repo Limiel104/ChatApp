@@ -9,5 +9,6 @@ data class ChatState(
     val messageToSend: String = "",
     val chatParticipantName: String = "",
     val isDialogActivated: Boolean = false,
-    val selectedMessage: Message? = null
+    val selectedMessage: Message? = null,
+    val profilePictureUrl: String = ""
 )

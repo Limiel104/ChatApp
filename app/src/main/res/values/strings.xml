@@ -18,4 +18,5 @@
     <string name="delete">Delete</string>
     <string name="message_deleted">Message deleted</string>
     <string name="undo">Undo</string>
+    <string name="choose_picture">"Choose profile picture"</string>
 </resources>

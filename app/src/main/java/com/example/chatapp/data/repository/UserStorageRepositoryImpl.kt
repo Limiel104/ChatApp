@@ -1,7 +1,11 @@
 package com.example.chatapp.data.repository
 
+import android.net.Uri
 import com.example.chatapp.domain.model.User
 import com.example.chatapp.domain.repository.UserStorageRepository
+import com.example.chatapp.util.Constants.FIRST_NAME
+import com.example.chatapp.util.Constants.LAST_NAME
+import com.example.chatapp.util.Constants.PROFILE_PICTURE_URL
 import com.example.chatapp.util.Constants.USER_UID
 import com.example.chatapp.util.Resource
 import com.google.firebase.firestore.CollectionReference
@@ -14,9 +18,16 @@ class UserStorageRepositoryImpl @Inject constructor(
     private val usersRef: CollectionReference
 ): UserStorageRepository {
 
-    override suspend fun addUser(user: User): Resource<Boolean> {
+    override suspend fun addUser(user: User, imageUri: Uri): Resource<Boolean> {
         return try {
-            usersRef.document().set(user).await()
+            usersRef.document().set(
+                mapOf(
+                    USER_UID to user.userUID,
+                    FIRST_NAME to user.firstName,
+                    LAST_NAME to user.lastName,
+                    PROFILE_PICTURE_URL to imageUri
+                )
+            ).await()
             Resource.Success(true)
         }
         catch (e: Exception) {

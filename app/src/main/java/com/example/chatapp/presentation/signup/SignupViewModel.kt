@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation.signup
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,11 @@ class SignupViewModel @Inject constructor(
                     lastName = event.value
                 )
             }
+            is SignupEvent.SelectedProfilePicture -> {
+                _signupState.value = signupState.value.copy(
+                    profilePictureUri = event.value!!
+                )
+            }
             is SignupEvent.Signup -> {
                 val email = _signupState.value.email
                 val password = _signupState.value.password
@@ -68,7 +74,12 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    fun signup(email: String, password: String, firstName: String, lastName: String) {
+    fun signup(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String
+    ) {
         viewModelScope.launch {
             _signupState.value = signupState.value.copy(
                 signupResponse = Resource.Loading
@@ -85,21 +96,19 @@ class SignupViewModel @Inject constructor(
 
             when (val signupResponse = _signupState.value.signupResponse) {
                 is Resource.Success -> {
+                    val userUID = chatUseCases.getCurrentUserUseCase()!!.uid
+                    val imageUri = _signupState.value.profilePictureUri
                     val user = User(
-                        userUID = chatUseCases.getCurrentUserUseCase()!!.uid,
+                        userUID = userUID,
                         firstName = firstName,
-                        lastName = lastName,
-                        avatarURL = "avatarURL"
+                        lastName = lastName
                     )
-                    when(val addUserResponse = chatUseCases.addUserUseCase(user)) {
-                        is Resource.Error -> {
-                            Log.i("TAG","Error while adding new user")
-                            val errorMessage = addUserResponse.message
-                            _eventFlow.emit(SignupUiEvent.ShowErrorMessage(errorMessage))
-                        }
-                        else -> {}
+                    if(imageUri == Uri.EMPTY) {
+                        addUser(user, Uri.EMPTY)
                     }
-                    _eventFlow.emit(SignupUiEvent.Signup)
+                    else {
+                        addProfilePicture(user, imageUri)
+                    }
                 }
                 is Resource.Error -> {
                     val errorMessage = signupResponse.message
@@ -152,5 +161,38 @@ class SignupViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    fun addProfilePicture(user: User, imageUri: Uri) {
+        viewModelScope.launch {
+            when(val addImageResponse = chatUseCases.addImageUseCase(user.userUID,imageUri)) {
+                is Resource.Success -> {
+                    val imageUrl = addImageResponse.result
+                    addUser(user,imageUrl)
+                }
+                is Resource.Error -> {
+                    Log.i("TAG","Error while adding new image")
+                    val errorMessage = addImageResponse.message
+                    _eventFlow.emit(SignupUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun addUser(user: User, imageUrl: Uri) {
+        viewModelScope.launch {
+            when(val addUserResponse = chatUseCases.addUserUseCase(user, imageUrl)) {
+                is Resource.Success -> {
+                    _eventFlow.emit(SignupUiEvent.Signup)
+                }
+                is Resource.Error -> {
+                    Log.i("TAG","Error while adding new user")
+                    val errorMessage = addUserResponse.message
+                    _eventFlow.emit(SignupUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {}
+            }
+        }
     }
 }

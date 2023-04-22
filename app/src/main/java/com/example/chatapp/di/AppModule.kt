@@ -1,9 +1,11 @@
 package com.example.chatapp.di
 
 import com.example.chatapp.data.repository.AuthRepositoryImpl
+import com.example.chatapp.data.repository.ImageStorageRepositoryImpl
 import com.example.chatapp.data.repository.MessageStorageRepositoryImpl
 import com.example.chatapp.data.repository.UserStorageRepositoryImpl
 import com.example.chatapp.domain.repository.AuthRepository
+import com.example.chatapp.domain.repository.ImageStorageRepository
 import com.example.chatapp.domain.repository.MessageStorageRepository
 import com.example.chatapp.domain.repository.UserStorageRepository
 import com.example.chatapp.domain.use_case.*
@@ -12,6 +14,7 @@ import com.example.chatapp.util.Constants.USERS_COLLECTION
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,10 +52,18 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideImageStorageRepository(): ImageStorageRepository {
+        val storage = Firebase.storage
+        return ImageStorageRepositoryImpl(storage)
+    }
+
+    @Provides
+    @Singleton
     fun provideChatUseCases(
         authRepository: AuthRepository,
         userStorageRepository: UserStorageRepository,
-        messageStorageRepository: MessageStorageRepository
+        messageStorageRepository: MessageStorageRepository,
+        imageStorageRepository: ImageStorageRepository
     ): ChatUseCases {
         return ChatUseCases(
             loginUseCase = LoginUseCase(authRepository),
@@ -66,6 +77,7 @@ object AppModule {
             addMessageUseCase = AddMessageUseCase(messageStorageRepository),
             getMessagesUseCase = GetMessagesUseCase(messageStorageRepository),
             deleteMessageUseCase = DeleteMessageUseCase(messageStorageRepository),
+            addImageUseCase = AddImageUseCase(imageStorageRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),

@@ -24,6 +24,7 @@ import com.example.chatapp.R
 @Composable
 fun ChatTopBar(
     name: String,
+    profilePictureUrl: String,
     onClick: () -> Unit
 ) {
     Row(
@@ -50,7 +51,7 @@ fun ChatTopBar(
             AsyncImage(
                 model = ImageRequest
                     .Builder(LocalContext.current)
-                    .data(R.drawable.ic_launcher_background)
+                    .data(profilePictureUrl)
                     .crossfade(true)
                     .placeholder(R.drawable.ic_person)
                     .build(),

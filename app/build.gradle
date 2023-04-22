@@ -95,6 +95,10 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation "com.google.firebase:firebase-auth-ktx"
     implementation "com.google.firebase:firebase-firestore-ktx"
+    implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'
+
+    //image cropper
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
 
     //Testing - local unit tests
     testImplementation "androidx.test:core:1.5.0"
