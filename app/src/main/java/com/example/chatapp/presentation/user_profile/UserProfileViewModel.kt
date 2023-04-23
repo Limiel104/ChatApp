@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation.user_profile
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -66,30 +67,11 @@ class UserProfileViewModel @Inject constructor(
                 val lastName = _userProfileState.value.lastName
 
                 if (isValidationSuccessful(firstName, lastName)) {
-                    val wasProfilePictureChanged = _userProfileState.value.wasProfilePictureChanged
-                    if(wasProfilePictureChanged) {
-
-                    }
-                    else {
-                        val user = User(
-                            userUID = _userProfileState.value.currentUserUID,
-                            firstName = _userProfileState.value.firstName,
-                            lastName = _userProfileState.value.lastName,
-                            profilePictureUrl = _userProfileState.value.profilePictureUrl
-                        )
-                        updateUserInfo(user)
-                    }
-                    Log.i("TAG","Profile Updated")
+                    updateUser()
                 }
                 else {
                     Log.i("TAG", "Error while updating user profile")
                 }
-            }
-            is UserProfileEvent.SaveNewProfilePicture -> {
-                viewModelScope.launch {
-                    _eventFlow.emit(UserProfileUiEvent.SaveNewProfilePicture)
-                }
-                Log.i("TAG","Profile Picture Updated")
             }
         }
     }
@@ -116,6 +98,63 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
+    fun updateUser() {
+        val wasProfilePictureChanged = _userProfileState.value.wasProfilePictureChanged
+        if(wasProfilePictureChanged) {
+            val imageUri = _userProfileState.value.profilePictureUri
+            val userUID = _userProfileState.value.currentUserUID
+            updateProfilePicture(userUID, imageUri)
+        }
+        else {
+            val user = User(
+                userUID = _userProfileState.value.currentUserUID,
+                firstName = _userProfileState.value.firstName,
+                lastName = _userProfileState.value.lastName,
+                profilePictureUrl = _userProfileState.value.profilePictureUrl
+            )
+            updateUserInfo(user)
+        }
+        Log.i("TAG","Profile Updated")
+    }
+
+    fun updateProfilePicture(userUID: String, imageUri: Uri) {
+        viewModelScope.launch {
+            _userProfileState.value = userProfileState.value.copy(
+                updateProfilePictureResponse = Resource.Loading
+            )
+
+            _userProfileState.value = userProfileState.value.copy(
+                updateProfilePictureResponse = chatUseCases.addImageUseCase(userUID, imageUri)
+            )
+
+            when(val updateResponse = _userProfileState.value.updateProfilePictureResponse) {
+                is Resource.Success -> {
+                    Log.i("TAG", "Update Successful")
+                    val imageUrl = updateResponse.result
+                    _userProfileState.value = userProfileState.value.copy(
+                        profilePictureUrl = imageUrl.toString()
+                    )
+                }
+                is Resource.Error -> {
+                    Log.i("TAG", "Update Error")
+                    val errorMessage = updateResponse.message
+                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {
+                    Log.i("TAG", "Loading...")
+                }
+            }
+
+            val user = User(
+                userUID = _userProfileState.value.currentUserUID,
+                firstName = _userProfileState.value.firstName,
+                lastName = _userProfileState.value.lastName,
+                profilePictureUrl = _userProfileState.value.profilePictureUrl
+            )
+            updateUserInfo(user)
+        }
+    }
+
     fun updateUserInfo(user: User) {
         viewModelScope.launch {
             _userProfileState.value = userProfileState.value.copy(
@@ -123,7 +162,7 @@ class UserProfileViewModel @Inject constructor(
             )
 
             _userProfileState.value = userProfileState.value.copy(
-                updateUserInfoResponse = chatUseCases.updateUserInfoUseCase(user)
+                updateUserInfoResponse = chatUseCases.updateUserUseCase(user)
             )
 
             when(val updateResponse = _userProfileState.value.updateUserInfoResponse) {

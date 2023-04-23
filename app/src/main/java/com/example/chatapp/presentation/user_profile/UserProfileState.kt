@@ -14,5 +14,6 @@ data class UserProfileState(
     val profilePictureUri: Uri = Uri.EMPTY,
     val wasProfilePictureChanged: Boolean = false,
     val updateUserInfoResponse: Resource<Boolean>? = null,
-    val currentUserUID: String = ""
+    val currentUserUID: String = "",
+    val updateProfilePictureResponse: Resource<Uri>? = null,
 )

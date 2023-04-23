@@ -73,7 +73,7 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserInfo(user: User): Resource<Boolean> {
+    override suspend fun updateUser(user: User): Resource<Boolean> {
         return try {
             usersRef.document(user.userUID).update(
                 mapOf(

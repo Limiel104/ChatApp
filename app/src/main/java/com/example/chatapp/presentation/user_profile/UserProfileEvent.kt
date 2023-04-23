@@ -7,6 +7,5 @@ sealed class UserProfileEvent {
     data class EnteredLastName(val value: String): UserProfileEvent()
     data class SelectedProfilePicture(val value: Uri?): UserProfileEvent()
     object EditSectionVisibilityChange: UserProfileEvent()
-    object SaveNewProfilePicture: UserProfileEvent()
     object Save: UserProfileEvent()
 }

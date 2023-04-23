@@ -47,7 +47,8 @@ fun UserProfileScreen(
     val lastNameError = viewModel.userProfileState.value.lastNameError
     val profilePictureUrl = viewModel.userProfileState.value.profilePictureUrl
     val wasProfilePictureChanged = viewModel.userProfileState.value.wasProfilePictureChanged
-    val isLoading = viewModel.userProfileState.value.updateUserInfoResponse == Resource.Loading
+    val isLoading = viewModel.userProfileState.value.updateUserInfoResponse == Resource.Loading ||
+            viewModel.userProfileState.value.updateProfilePictureResponse == Resource.Loading
     val context = LocalContext.current
 
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -71,9 +72,6 @@ fun UserProfileScreen(
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
                 is UserProfileUiEvent.Save -> {
-                    navController.popBackStack()
-                }
-                is UserProfileUiEvent.SaveNewProfilePicture -> {
                     navController.popBackStack()
                 }
                 is UserProfileUiEvent.ShowErrorMessage -> {
@@ -177,7 +175,7 @@ fun UserProfileScreen(
                     modifier = Modifier
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color.Black),
-                    onClick = { viewModel.onEvent(UserProfileEvent.SaveNewProfilePicture) }
+                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
                 ) {
                     Text(
                         text = stringResource(id = R.string.save),

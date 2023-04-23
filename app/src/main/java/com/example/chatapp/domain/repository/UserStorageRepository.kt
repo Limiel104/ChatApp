@@ -13,5 +13,5 @@ interface UserStorageRepository {
 
     fun getUsers(currentUserUID: String): Flow<Resource<List<User>>>
 
-    suspend fun updateUserInfo(user: User): Resource<Boolean>
+    suspend fun updateUser(user: User): Resource<Boolean>
 }
