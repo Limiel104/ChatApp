@@ -20,7 +20,7 @@ class UserStorageRepositoryImpl @Inject constructor(
 
     override suspend fun addUser(user: User, imageUri: Uri): Resource<Boolean> {
         return try {
-            usersRef.document().set(
+            usersRef.document(user.userUID).set(
                 mapOf(
                     USER_UID to user.userUID,
                     FIRST_NAME to user.firstName,
@@ -37,7 +37,7 @@ class UserStorageRepositoryImpl @Inject constructor(
 
     override fun getUser(userUID: String) = callbackFlow {
         val snapshotListener = usersRef
-            .whereEqualTo(USER_UID,userUID)
+            .whereEqualTo(USER_UID, userUID)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
                     val user = snapshot.toObjects(User::class.java)
@@ -56,7 +56,7 @@ class UserStorageRepositoryImpl @Inject constructor(
 
     override fun getUsers(currentUserUID: String) = callbackFlow {
         val snapshotListener = usersRef
-            .whereNotEqualTo(USER_UID,currentUserUID)
+            .whereNotEqualTo(USER_UID, currentUserUID)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
                     val users = snapshot.toObjects(User::class.java)
@@ -70,6 +70,23 @@ class UserStorageRepositoryImpl @Inject constructor(
 
         awaitClose {
             snapshotListener.remove()
+        }
+    }
+
+    override suspend fun updateUser(user: User, imageUri: Uri): Resource<Boolean> {
+        return try {
+            usersRef.document(user.userUID).update(
+                mapOf(
+                    USER_UID to user.userUID,
+                    FIRST_NAME to user.firstName,
+                    LAST_NAME to user.lastName,
+                    PROFILE_PICTURE_URL to imageUri
+                )
+            ).await()
+            Resource.Success(true)
+        }
+        catch (e: Exception) {
+            Resource.Error(e.localizedMessage as String)
         }
     }
 }

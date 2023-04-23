@@ -78,6 +78,7 @@ object AppModule {
             getMessagesUseCase = GetMessagesUseCase(messageStorageRepository),
             deleteMessageUseCase = DeleteMessageUseCase(messageStorageRepository),
             addImageUseCase = AddImageUseCase(imageStorageRepository),
+            updateUserInfoUseCase = UpdateUserInfoUseCase(userStorageRepository),
             validateEmailUseCase = ValidateEmailUseCase(),
             validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
             validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
