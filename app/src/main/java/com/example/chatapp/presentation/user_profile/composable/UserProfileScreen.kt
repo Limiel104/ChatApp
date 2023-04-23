@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation.user_profile.composable
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -10,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +31,7 @@ import com.example.chatapp.presentation.user_profile.UserProfileEvent
 import com.example.chatapp.presentation.user_profile.UserProfileUiEvent
 import com.example.chatapp.presentation.user_profile.UserProfileViewModel
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.Resource
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -44,6 +47,8 @@ fun UserProfileScreen(
     val lastNameError = viewModel.userProfileState.value.lastNameError
     val profilePictureUrl = viewModel.userProfileState.value.profilePictureUrl
     val wasProfilePictureChanged = viewModel.userProfileState.value.wasProfilePictureChanged
+    val isLoading = viewModel.userProfileState.value.updateUserInfoResponse == Resource.Loading
+    val context = LocalContext.current
 
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         viewModel.onEvent(UserProfileEvent.SelectedProfilePicture(result.uriContent))
@@ -70,6 +75,9 @@ fun UserProfileScreen(
                 }
                 is UserProfileUiEvent.SaveNewProfilePicture -> {
                     navController.popBackStack()
+                }
+                is UserProfileUiEvent.ShowErrorMessage -> {
+                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -192,6 +200,17 @@ fun UserProfileScreen(
                     )
                 }
             }
+        }
+    }
+
+    if(isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag(Constants.CIRCULAR_INDICATOR),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
     }
 }

@@ -73,14 +73,14 @@ class UserStorageRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUser(user: User, imageUri: Uri): Resource<Boolean> {
+    override suspend fun updateUserInfo(user: User): Resource<Boolean> {
         return try {
             usersRef.document(user.userUID).update(
                 mapOf(
                     USER_UID to user.userUID,
                     FIRST_NAME to user.firstName,
                     LAST_NAME to user.lastName,
-                    PROFILE_PICTURE_URL to imageUri
+                    PROFILE_PICTURE_URL to user.profilePictureUrl
                 )
             ).await()
             Resource.Success(true)
