@@ -13,20 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
-import com.example.chatapp.R
-import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
-import com.example.chatapp.presentation.common.composable.ProfilePicture
 import com.example.chatapp.presentation.user_profile.UserProfileEvent
 import com.example.chatapp.presentation.user_profile.UserProfileUiEvent
 import com.example.chatapp.presentation.user_profile.UserProfileViewModel
@@ -99,19 +92,10 @@ fun UserProfileScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfilePicture(
-                size = 150,
+            UserProfile(
                 profilePictureUrl = profilePictureUrl,
-                isClickable = true,
+                name = name,
                 onClick = { galleryLauncher.launch(Constants.DEVICE_IMAGES) }
-            )
-
-            Text(
-                text = name,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 1
             )
         }
 
@@ -120,137 +104,34 @@ fun UserProfileScreen(
                 .weight(1F)
         ) {
             if (isEditProfileInfoVisible) {
-                OutlinedTextField(
-                    value = firstName,
-                    singleLine = true,
-                    isError = firstNameError != null,
-                    label = { Text(stringResource(id = R.string.first_name)) },
-                    placeholder = { Text(stringResource(id = R.string.first_name)) },
-                    onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredFirstName(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(Constants.FIRST_NAME_TF)
-                )
-
-                if(firstNameError != null) {
-                    ErrorTextFieldItem(
-                        errorMessage = firstNameError,
-                        testTag = Constants.FIRST_NAME_ERROR_TF
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                OutlinedTextField(
-                    value = lastName,
-                    singleLine = true,
-                    label = { Text(stringResource(id = R.string.last_name)) },
-                    placeholder = { Text(stringResource(id = R.string.last_name)) },
-                    onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredLastName(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(Constants.LAST_NAME_TF)
-                )
-
-                if(lastNameError != null) {
-                    ErrorTextFieldItem(
-                        errorMessage = lastNameError,
-                        testTag = Constants.LAST_NAME_ERROR_TF
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
+                EditProfileInfoSection(
+                    firstName = firstName,
+                    firstNameError = firstNameError,
+                    lastName = lastName,
+                    lastNameError = lastNameError,
+                    onFirstNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredFirstName(it)) },
+                    onLastNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredLastName(it)) },
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.save),
-                        color = Color.White,
-                        modifier = Modifier.padding(7.dp)
-                    )
-                }
+                )
             }
             else if(wasProfilePictureChanged) {
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
+                EditProfilePictureSection(
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.save),
-                        color = Color.White,
-                        modifier = Modifier.padding(7.dp)
-                    )
-                }
+                )
             }
             else if(isEditEmailVisible) {
-                OutlinedTextField(
-                    value = email,
-                    singleLine = true,
-                    isError = firstNameError != null,
-                    label = { Text(stringResource(id = R.string.email)) },
-                    placeholder = { Text(stringResource(id = R.string.email)) },
+                EditEmailSection(
+                    email = email,
+                    emailError = emailError,
                     onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredEmail(it)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag(Constants.FIRST_NAME_TF)
-                )
-
-                if(emailError != null) {
-                    ErrorTextFieldItem(
-                        errorMessage = emailError,
-                        testTag = Constants.FIRST_NAME_ERROR_TF
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.save),
-                        color = Color.White,
-                        modifier = Modifier.padding(7.dp)
-                    )
-                }
+                )
             }
             else {
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
-                    onClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.edit_profile_info),
-                        color = Color.White,
-                        modifier = Modifier.padding(7.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(Color.Black),
-                    onClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.edit_email),
-                        color = Color.White,
-                        modifier = Modifier.padding(7.dp)
-                    )
-                }
+                EditSectionOptions(
+                    onEditProfileInfoClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) },
+                    onEditEmailClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) }
+                )
             }
         }
     }
