@@ -18,6 +18,7 @@ import com.example.chatapp.R
 fun EditSectionOptions(
     onEditProfileInfoClick: () -> Unit,
     onEditEmailClick: () -> Unit,
+    onEditPasswordClick: () -> Unit
 ) {
     OutlinedButton(
         modifier = Modifier
@@ -42,6 +43,21 @@ fun EditSectionOptions(
     ) {
         Text(
             text = stringResource(id = R.string.edit_email),
+            color = Color.White,
+            modifier = Modifier.padding(7.dp)
+        )
+    }
+
+    Spacer(modifier = Modifier.height(15.dp))
+
+    OutlinedButton(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(Color.Black),
+        onClick = { onEditPasswordClick() }
+    ) {
+        Text(
+            text = stringResource(id = R.string.edit_password),
             color = Color.White,
             modifier = Modifier.padding(7.dp)
         )

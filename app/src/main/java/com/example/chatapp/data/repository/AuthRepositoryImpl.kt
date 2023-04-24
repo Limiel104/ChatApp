@@ -57,6 +57,17 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updatePassword(password: String): Resource<Boolean> {
+        return try {
+            firebaseAuth.currentUser!!.updatePassword(password).await()
+            Resource.Success(true)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.localizedMessage!!)
+        }
+    }
+
     override fun logout() {
         firebaseAuth.signOut()
     }

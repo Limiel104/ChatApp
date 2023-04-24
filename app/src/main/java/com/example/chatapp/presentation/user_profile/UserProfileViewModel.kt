@@ -56,6 +56,16 @@ class UserProfileViewModel @Inject constructor(
                     email = event.value
                 )
             }
+            is UserProfileEvent.EnteredPassword -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    password = event.value
+                )
+            }
+            is UserProfileEvent.EnteredConfirmPassword -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    confirmPassword = event.value
+                )
+            }
             is UserProfileEvent.SelectedProfilePicture -> {
                 _userProfileState.value = userProfileState.value.copy(
                     profilePictureUri = event.value!!,
@@ -73,12 +83,19 @@ class UserProfileViewModel @Inject constructor(
                     isEditEmailVisible = !_userProfileState.value.isEditEmailVisible
                 )
             }
+            is UserProfileEvent.EditPasswordVisibilityChange -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    isEditPasswordVisible = !_userProfileState.value.isEditPasswordVisible
+                )
+            }
             is UserProfileEvent.Save -> {
                 val firstName = _userProfileState.value.firstName
                 val lastName = _userProfileState.value.lastName
                 val email = _userProfileState.value.email
+                val password = _userProfileState.value.password
+                val confirmPassword = _userProfileState.value.confirmPassword
 
-                if (isValidationSuccessful(firstName, lastName, email)) {
+                if (isValidationSuccessful(firstName, lastName, email, password, confirmPassword)) {
                     updateUser()
                 }
                 else {
@@ -119,6 +136,7 @@ class UserProfileViewModel @Inject constructor(
     fun updateUser() {
         val wasProfilePictureChanged = _userProfileState.value.wasProfilePictureChanged
         val wasEmailChanged = _userProfileState.value.isEditEmailVisible
+        val wasPasswordChanged = _userProfileState.value.isEditPasswordVisible
 
         if(wasProfilePictureChanged) {
             val imageUri = _userProfileState.value.profilePictureUri
@@ -128,6 +146,10 @@ class UserProfileViewModel @Inject constructor(
         else if(wasEmailChanged) {
             val email = _userProfileState.value.email
             updateUserEmail(email)
+        }
+        else if(wasPasswordChanged) {
+            val password = _userProfileState.value.password
+            updateUserPassword(password)
         }
         else {
             val user = User(
@@ -233,26 +255,61 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
+    fun updateUserPassword(password: String) {
+        viewModelScope.launch {
+            _userProfileState.value = userProfileState.value.copy(
+                updateUserResponse = Resource.Loading
+            )
+
+            _userProfileState.value = userProfileState.value.copy(
+                updateUserResponse = chatUseCases.updateUserPasswordUseCase(password)
+            )
+
+            when(val updateResponse = _userProfileState.value.updateUserResponse) {
+                is Resource.Success -> {
+                    Log.i("TAG", "Update Successful")
+                    _eventFlow.emit(UserProfileUiEvent.Save)
+                }
+                is Resource.Error -> {
+                    val errorMessage = updateResponse.message
+                    Log.i("TAG", "Update Error")
+                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {
+                    Log.i("TAG", "Loading...")
+                }
+            }
+        }
+    }
+
     fun isValidationSuccessful(
         firstName: String,
         lastName: String,
-        email: String
+        email: String,
+        password: String,
+        confirmPassword: String
     ): Boolean {
         val firstNameValidationResult = chatUseCases.validateNameUseCase(firstName)
         val lastNameValidationResult = chatUseCases.validateNameUseCase(lastName)
         val emailValidationResult = chatUseCases.validateEmailUseCase(email)
+        val passwordValidationResult = chatUseCases.validateSignupPasswordUseCase(password)
+        val confirmPasswordValidationResult = chatUseCases.validateConfirmPasswordUseCase(password, confirmPassword)
 
         val hasError = listOf(
             firstNameValidationResult,
             lastNameValidationResult,
-            emailValidationResult
+            emailValidationResult,
+            passwordValidationResult,
+            confirmPasswordValidationResult
         ).any { !it.isSuccessful }
 
         if(hasError) {
             _userProfileState.value = userProfileState.value.copy(
                 firstNameError = firstNameValidationResult.errorMessage,
                 lastNameError = lastNameValidationResult.errorMessage,
-                emailError = emailValidationResult.errorMessage
+                emailError = emailValidationResult.errorMessage,
+                passwordError = passwordValidationResult.errorMessage,
+                confirmPasswordError = confirmPasswordValidationResult.errorMessage
             )
             return false
         }

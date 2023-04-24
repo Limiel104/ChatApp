@@ -39,10 +39,15 @@ fun UserProfileScreen(
     val lastNameError = viewModel.userProfileState.value.lastNameError
     val email = viewModel.userProfileState.value.email
     val emailError = viewModel.userProfileState.value.emailError
+    val password = viewModel.userProfileState.value.password
+    val passwordError = viewModel.userProfileState.value.passwordError
+    val confirmPassword = viewModel.userProfileState.value.confirmPassword
+    val confirmPasswordError = viewModel.userProfileState.value.confirmPasswordError
     val profilePictureUrl = viewModel.userProfileState.value.profilePictureUrl
     val wasProfilePictureChanged = viewModel.userProfileState.value.wasProfilePictureChanged
     val isEditProfileInfoVisible = viewModel.userProfileState.value.isEditProfileInfoVisible
     val isEditEmailVisible = viewModel.userProfileState.value.isEditEmailVisible
+    val isEditPasswordVisible = viewModel.userProfileState.value.isEditPasswordVisible
 
     val isLoading = viewModel.userProfileState.value.updateUserResponse == Resource.Loading ||
             viewModel.userProfileState.value.updateProfilePictureResponse == Resource.Loading
@@ -127,10 +132,22 @@ fun UserProfileScreen(
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
                 )
             }
+            else if(isEditPasswordVisible) {
+                EditPasswordSection(
+                    password = password,
+                    passwordError = passwordError,
+                    confirmPassword = confirmPassword,
+                    confirmPasswordError = confirmPasswordError,
+                    onPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredPassword(it)) },
+                    onConfirmPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredConfirmPassword(it)) },
+                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                )
+            }
             else {
                 EditSectionOptions(
                     onEditProfileInfoClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) },
-                    onEditEmailClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) }
+                    onEditEmailClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) },
+                    onEditPasswordClick = { viewModel.onEvent(UserProfileEvent.EditPasswordVisibilityChange) }
                 )
             }
         }
