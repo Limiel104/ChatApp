@@ -5,7 +5,9 @@ import android.net.Uri
 sealed class UserProfileEvent {
     data class EnteredFirstName(val value: String): UserProfileEvent()
     data class EnteredLastName(val value: String): UserProfileEvent()
+    data class EnteredEmail(val value: String): UserProfileEvent()
     data class SelectedProfilePicture(val value: Uri?): UserProfileEvent()
-    object EditSectionVisibilityChange: UserProfileEvent()
+    object EditProfileInfoVisibilityChange: UserProfileEvent()
+    object EditEmailVisibilityChange: UserProfileEvent()
     object Save: UserProfileEvent()
 }

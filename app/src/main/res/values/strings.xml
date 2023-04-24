@@ -22,4 +22,5 @@
     <string name="search">Search …</string>
     <string name="edit_profile_info">Edit Profile Info</string>
     <string name="save">Save</string>
+    <string name="edit_email">Edit Email</string>
 </resources>

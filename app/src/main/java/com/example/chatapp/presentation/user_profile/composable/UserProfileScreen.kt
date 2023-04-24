@@ -39,15 +39,19 @@ fun UserProfileScreen(
     navController: NavController,
     viewModel: UserProfileViewModel = hiltViewModel()
 ) {
-    val isEditSectionVisible = viewModel.userProfileState.value.isEditSectionVisible
     val name = viewModel.userProfileState.value.name
     val firstName = viewModel.userProfileState.value.firstName
     val firstNameError = viewModel.userProfileState.value.firstNameError
     val lastName = viewModel.userProfileState.value.lastName
     val lastNameError = viewModel.userProfileState.value.lastNameError
+    val email = viewModel.userProfileState.value.email
+    val emailError = viewModel.userProfileState.value.emailError
     val profilePictureUrl = viewModel.userProfileState.value.profilePictureUrl
     val wasProfilePictureChanged = viewModel.userProfileState.value.wasProfilePictureChanged
-    val isLoading = viewModel.userProfileState.value.updateUserInfoResponse == Resource.Loading ||
+    val isEditProfileInfoVisible = viewModel.userProfileState.value.isEditProfileInfoVisible
+    val isEditEmailVisible = viewModel.userProfileState.value.isEditEmailVisible
+
+    val isLoading = viewModel.userProfileState.value.updateUserResponse == Resource.Loading ||
             viewModel.userProfileState.value.updateProfilePictureResponse == Resource.Loading
     val context = LocalContext.current
 
@@ -115,7 +119,7 @@ fun UserProfileScreen(
             modifier = Modifier
                 .weight(1F)
         ) {
-            if (isEditSectionVisible) {
+            if (isEditProfileInfoVisible) {
                 OutlinedTextField(
                     value = firstName,
                     singleLine = true,
@@ -184,15 +188,65 @@ fun UserProfileScreen(
                     )
                 }
             }
+            else if(isEditEmailVisible) {
+                OutlinedTextField(
+                    value = email,
+                    singleLine = true,
+                    isError = firstNameError != null,
+                    label = { Text(stringResource(id = R.string.email)) },
+                    placeholder = { Text(stringResource(id = R.string.email)) },
+                    onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredEmail(it)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(Constants.FIRST_NAME_TF)
+                )
+
+                if(emailError != null) {
+                    ErrorTextFieldItem(
+                        errorMessage = emailError,
+                        testTag = Constants.FIRST_NAME_ERROR_TF
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
+                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save),
+                        color = Color.White,
+                        modifier = Modifier.padding(7.dp)
+                    )
+                }
+            }
             else {
                 OutlinedButton(
                     modifier = Modifier
                         .fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(Color.Black),
-                    onClick = { viewModel.onEvent(UserProfileEvent.EditSectionVisibilityChange) }
+                    onClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) }
                 ) {
                     Text(
                         text = stringResource(id = R.string.edit_profile_info),
+                        color = Color.White,
+                        modifier = Modifier.padding(7.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(15.dp))
+
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(Color.Black),
+                    onClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) }
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.edit_email),
                         color = Color.White,
                         modifier = Modifier.padding(7.dp)
                     )

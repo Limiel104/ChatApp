@@ -34,17 +34,13 @@ class UserProfileViewModel @Inject constructor(
             _userProfileState.value = userProfileState.value.copy(
                 currentUserUID = currentUserUID
             )
-            getCurrentUserData(currentUserUID)
+            getCurrentUserProfileInfoData(currentUserUID)
         }
+        getCurrentUserLoginData()
     }
 
     fun onEvent(event: UserProfileEvent) {
         when(event) {
-            is UserProfileEvent.EditSectionVisibilityChange -> {
-                _userProfileState.value = userProfileState.value.copy(
-                    isEditSectionVisible = !_userProfileState.value.isEditSectionVisible
-                )
-            }
             is UserProfileEvent.EnteredFirstName -> {
                 _userProfileState.value = userProfileState.value.copy(
                     firstName = event.value
@@ -55,6 +51,11 @@ class UserProfileViewModel @Inject constructor(
                     lastName = event.value
                 )
             }
+            is UserProfileEvent.EnteredEmail -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    email = event.value
+                )
+            }
             is UserProfileEvent.SelectedProfilePicture -> {
                 _userProfileState.value = userProfileState.value.copy(
                     profilePictureUri = event.value!!,
@@ -62,11 +63,22 @@ class UserProfileViewModel @Inject constructor(
                     wasProfilePictureChanged = true
                 )
             }
+            is UserProfileEvent.EditProfileInfoVisibilityChange -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    isEditProfileInfoVisible = !_userProfileState.value.isEditProfileInfoVisible
+                )
+            }
+            is UserProfileEvent.EditEmailVisibilityChange -> {
+                _userProfileState.value = userProfileState.value.copy(
+                    isEditEmailVisible = !_userProfileState.value.isEditEmailVisible
+                )
+            }
             is UserProfileEvent.Save -> {
                 val firstName = _userProfileState.value.firstName
                 val lastName = _userProfileState.value.lastName
+                val email = _userProfileState.value.email
 
-                if (isValidationSuccessful(firstName, lastName)) {
+                if (isValidationSuccessful(firstName, lastName, email)) {
                     updateUser()
                 }
                 else {
@@ -76,7 +88,7 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentUserData(currentUserUID: String) {
+    fun getCurrentUserProfileInfoData(currentUserUID: String) {
         viewModelScope.launch {
             chatUseCases.getUserUseCase(currentUserUID).collect { response ->
                 when(response) {
@@ -98,12 +110,24 @@ class UserProfileViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentUserLoginData() {
+        _userProfileState.value = userProfileState.value.copy(
+            email = chatUseCases.getCurrentUserUseCase()!!.email!!
+        )
+    }
+
     fun updateUser() {
         val wasProfilePictureChanged = _userProfileState.value.wasProfilePictureChanged
+        val wasEmailChanged = _userProfileState.value.isEditEmailVisible
+
         if(wasProfilePictureChanged) {
             val imageUri = _userProfileState.value.profilePictureUri
             val userUID = _userProfileState.value.currentUserUID
             updateProfilePicture(userUID, imageUri)
+        }
+        else if(wasEmailChanged) {
+            val email = _userProfileState.value.email
+            updateUserEmail(email)
         }
         else {
             val user = User(
@@ -112,7 +136,7 @@ class UserProfileViewModel @Inject constructor(
                 lastName = _userProfileState.value.lastName,
                 profilePictureUrl = _userProfileState.value.profilePictureUrl
             )
-            updateUserInfo(user)
+            updateUserProfileInfo(user)
         }
         Log.i("TAG","Profile Updated")
     }
@@ -151,21 +175,21 @@ class UserProfileViewModel @Inject constructor(
                 lastName = _userProfileState.value.lastName,
                 profilePictureUrl = _userProfileState.value.profilePictureUrl
             )
-            updateUserInfo(user)
+            updateUserProfileInfo(user)
         }
     }
 
-    fun updateUserInfo(user: User) {
+    fun updateUserProfileInfo(user: User) {
         viewModelScope.launch {
             _userProfileState.value = userProfileState.value.copy(
-                updateUserInfoResponse = Resource.Loading
+                updateUserResponse = Resource.Loading
             )
 
             _userProfileState.value = userProfileState.value.copy(
-                updateUserInfoResponse = chatUseCases.updateUserUseCase(user)
+                updateUserResponse = chatUseCases.updateUserInfoUseCase(user)
             )
 
-            when(val updateResponse = _userProfileState.value.updateUserInfoResponse) {
+            when(val updateResponse = _userProfileState.value.updateUserResponse) {
                 is Resource.Success -> {
                     Log.i("TAG", "Update Successful")
                     _eventFlow.emit(UserProfileUiEvent.Save)
@@ -179,26 +203,56 @@ class UserProfileViewModel @Inject constructor(
                     Log.i("TAG", "Loading...")
                 }
             }
+        }
+    }
 
+    fun updateUserEmail(email: String) {
+        viewModelScope.launch {
+            _userProfileState.value = userProfileState.value.copy(
+                updateUserResponse = Resource.Loading
+            )
+
+            _userProfileState.value = userProfileState.value.copy(
+                updateUserResponse = chatUseCases.updateUserEmailUseCase(email)
+            )
+
+            when(val updateResponse = _userProfileState.value.updateUserResponse) {
+                is Resource.Success -> {
+                    Log.i("TAG", "Update Successful")
+                    _eventFlow.emit(UserProfileUiEvent.Save)
+                }
+                is Resource.Error -> {
+                    val errorMessage = updateResponse.message
+                    Log.i("TAG", "Update Error")
+                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+                }
+                else -> {
+                    Log.i("TAG", "Loading...")
+                }
+            }
         }
     }
 
     fun isValidationSuccessful(
         firstName: String,
-        lastName: String
+        lastName: String,
+        email: String
     ): Boolean {
         val firstNameValidationResult = chatUseCases.validateNameUseCase(firstName)
         val lastNameValidationResult = chatUseCases.validateNameUseCase(lastName)
+        val emailValidationResult = chatUseCases.validateEmailUseCase(email)
 
         val hasError = listOf(
             firstNameValidationResult,
-            lastNameValidationResult
+            lastNameValidationResult,
+            emailValidationResult
         ).any { !it.isSuccessful }
 
         if(hasError) {
             _userProfileState.value = userProfileState.value.copy(
                 firstNameError = firstNameValidationResult.errorMessage,
-                lastNameError = lastNameValidationResult.errorMessage
+                lastNameError = lastNameValidationResult.errorMessage,
+                emailError = emailValidationResult.errorMessage
             )
             return false
         }
