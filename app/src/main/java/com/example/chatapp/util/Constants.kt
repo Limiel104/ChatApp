@@ -85,4 +85,10 @@ object Constants {
 
     const val IMAGES: String = "images"
     const val DEVICE_IMAGES: String = "image/*"
+
+    //Content description
+    const val Search: String = "Search"
+    const val Logout: String = "Logout"
+    const val UserImage: String = "User image"
+    const val GoBack: String = "Go back"
 }

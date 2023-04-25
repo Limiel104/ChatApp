@@ -1,6 +1,7 @@
 package com.example.chatapp.presentation.signup
 
 import com.example.chatapp.data.repository.FakeAuthRepository
+import com.example.chatapp.data.repository.FakeImageStorageRepository
 import com.example.chatapp.data.repository.FakeMessageStorageRepository
 import com.example.chatapp.data.repository.FakeUserStorageRepository
 import com.example.chatapp.domain.use_case.*
@@ -27,6 +28,7 @@ class SignupViewModelTest {
         val fakeAuthRepository = FakeAuthRepository()
         val fakeUserStorageRepository = FakeUserStorageRepository()
         val fakeMessageStorageRepository = FakeMessageStorageRepository()
+        val fakeImageStorageRepository = FakeImageStorageRepository()
 
         viewModel = SignupViewModel(
             ChatUseCases(
@@ -41,6 +43,7 @@ class SignupViewModelTest {
                 addMessageUseCase = AddMessageUseCase(fakeMessageStorageRepository),
                 getMessagesUseCase = GetMessagesUseCase(fakeMessageStorageRepository),
                 deleteMessageUseCase = DeleteMessageUseCase(fakeMessageStorageRepository),
+                addImageUseCase = AddImageUseCase(fakeImageStorageRepository),
                 validateEmailUseCase = ValidateEmailUseCase(),
                 validateLoginPasswordUseCase = ValidateLoginPasswordUseCase(),
                 validateSignupPasswordUseCase = ValidateSignupPasswordUseCase(),
