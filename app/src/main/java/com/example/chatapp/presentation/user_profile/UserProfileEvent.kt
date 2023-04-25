@@ -13,4 +13,5 @@ sealed class UserProfileEvent {
     object EditEmailVisibilityChange: UserProfileEvent()
     object EditPasswordVisibilityChange: UserProfileEvent()
     object Save: UserProfileEvent()
+    object GoBack: UserProfileEvent()
 }

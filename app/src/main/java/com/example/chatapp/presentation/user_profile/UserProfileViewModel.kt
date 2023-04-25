@@ -96,6 +96,11 @@ class UserProfileViewModel @Inject constructor(
                     Log.i("TAG", "Error while updating user profile")
                 }
             }
+            UserProfileEvent.GoBack -> {
+                viewModelScope.launch {
+                    _eventFlow.emit(UserProfileUiEvent.GoBack)
+                }
+            }
         }
     }
 

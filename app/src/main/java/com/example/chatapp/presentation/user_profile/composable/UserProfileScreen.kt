@@ -77,90 +77,102 @@ fun UserProfileScreen(
                     navController.popBackStack()
                 }
                 is UserProfileUiEvent.ShowErrorMessage -> {
-                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                }
+                is UserProfileUiEvent.GoBack -> {
+                    navController.popBackStack()
                 }
             }
         }
     }
 
-    Column(
+    Scaffold(
+        topBar = {
+            UserProfileTopBar(
+                onClick = { viewModel.onEvent(UserProfileEvent.GoBack) }
+            )
+        },
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(horizontal = 10.dp)
-            .padding(top = 60.dp, bottom = 10.dp)
-    ) {
+            .padding(10.dp)
+    ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
-            UserProfile(
-                profilePictureUrl = profilePictureUrl,
-                name = name,
-                onClick = { galleryLauncher.launch(Constants.DEVICE_IMAGES) }
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                UserProfile(
+                    profilePictureUrl = profilePictureUrl,
+                    name = name,
+                    onClick = { galleryLauncher.launch(Constants.DEVICE_IMAGES) }
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .weight(1F)
+            ) {
+                if(isEditProfileInfoVisible) {
+                    EditProfileInfoSection(
+                        firstName = firstName,
+                        firstNameError = firstNameError,
+                        lastName = lastName,
+                        lastNameError = lastNameError,
+                        onFirstNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredFirstName(it)) },
+                        onLastNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredLastName(it)) },
+                        onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                    )
+                }
+                else if(isEditEmailVisible) {
+                    EditEmailSection(
+                        email = email,
+                        emailError = emailError,
+                        onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredEmail(it)) },
+                        onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                    )
+                }
+                else if(isEditPasswordVisible) {
+                    EditPasswordSection(
+                        password = password,
+                        passwordError = passwordError,
+                        confirmPassword = confirmPassword,
+                        confirmPasswordError = confirmPasswordError,
+                        onPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredPassword(it)) },
+                        onConfirmPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredConfirmPassword(it)) },
+                        onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                    )
+                }
+                else if(wasProfilePictureChanged) {
+                    EditProfilePictureSection(
+                        onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                    )
+                }
+                else {
+                    EditSectionOptions(
+                        onEditProfileInfoClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) },
+                        onEditEmailClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) },
+                        onEditPasswordClick = { viewModel.onEvent(UserProfileEvent.EditPasswordVisibilityChange) }
+                    )
+                }
+            }
         }
 
-        Column(
-            modifier = Modifier
-                .weight(1F)
-        ) {
-            if (isEditProfileInfoVisible) {
-                EditProfileInfoSection(
-                    firstName = firstName,
-                    firstNameError = firstNameError,
-                    lastName = lastName,
-                    lastNameError = lastNameError,
-                    onFirstNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredFirstName(it)) },
-                    onLastNameValueChange = { viewModel.onEvent(UserProfileEvent.EnteredLastName(it)) },
-                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                )
+        if(isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag(Constants.CIRCULAR_INDICATOR),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
             }
-            else if(isEditEmailVisible) {
-                EditEmailSection(
-                    email = email,
-                    emailError = emailError,
-                    onValueChange = { viewModel.onEvent(UserProfileEvent.EnteredEmail(it)) },
-                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                )
-            }
-            else if(isEditPasswordVisible) {
-                EditPasswordSection(
-                    password = password,
-                    passwordError = passwordError,
-                    confirmPassword = confirmPassword,
-                    confirmPasswordError = confirmPasswordError,
-                    onPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredPassword(it)) },
-                    onConfirmPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredConfirmPassword(it)) },
-                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                )
-            }
-            else if(wasProfilePictureChanged) {
-                EditProfilePictureSection(
-                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                )
-            }
-            else {
-                EditSectionOptions(
-                    onEditProfileInfoClick = { viewModel.onEvent(UserProfileEvent.EditProfileInfoVisibilityChange) },
-                    onEditEmailClick = { viewModel.onEvent(UserProfileEvent.EditEmailVisibilityChange) },
-                    onEditPasswordClick = { viewModel.onEvent(UserProfileEvent.EditPasswordVisibilityChange) }
-                )
-            }
-        }
-    }
-
-    if(isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .testTag(Constants.CIRCULAR_INDICATOR),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
         }
     }
 }
