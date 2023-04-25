@@ -89,13 +89,7 @@ class UserProfileViewModel @Inject constructor(
                 )
             }
             is UserProfileEvent.Save -> {
-                val firstName = _userProfileState.value.firstName
-                val lastName = _userProfileState.value.lastName
-                val email = _userProfileState.value.email
-                val password = _userProfileState.value.password
-                val confirmPassword = _userProfileState.value.confirmPassword
-
-                if (isValidationSuccessful(firstName, lastName, email, password, confirmPassword)) {
+                if(isValidationSuccessful()) {
                     updateUser()
                 }
                 else {
@@ -120,7 +114,7 @@ class UserProfileViewModel @Inject constructor(
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
-                        Log.i("TAG",response.message)
+                        Log.i("TAG", response.message)
                     }
                 }
             }
@@ -138,176 +132,188 @@ class UserProfileViewModel @Inject constructor(
         val wasEmailChanged = _userProfileState.value.isEditEmailVisible
         val wasPasswordChanged = _userProfileState.value.isEditPasswordVisible
 
-        if(wasProfilePictureChanged) {
-            val imageUri = _userProfileState.value.profilePictureUri
-            val userUID = _userProfileState.value.currentUserUID
-            updateProfilePicture(userUID, imageUri)
+        viewModelScope.launch {
+            if(wasProfilePictureChanged) {
+                val imageUri = _userProfileState.value.profilePictureUri
+                val userUID = _userProfileState.value.currentUserUID
+                updateProfilePicture(userUID, imageUri)
+            }
+
+            if(wasEmailChanged) {
+                val email = _userProfileState.value.email
+                updateUserEmail(email)
+            }
+            else if(wasPasswordChanged) {
+                val password = _userProfileState.value.password
+                updateUserPassword(password)
+            }
+            else if(!wasProfilePictureChanged) {
+                updateUserProfileInfo()
+            }
+
+            _eventFlow.emit(UserProfileUiEvent.Save)
         }
-        else if(wasEmailChanged) {
-            val email = _userProfileState.value.email
-            updateUserEmail(email)
+    }
+
+    suspend fun updateProfilePicture(userUID: String, imageUri: Uri) {
+        _userProfileState.value = userProfileState.value.copy(
+            updateProfilePictureResponse = Resource.Loading
+        )
+
+        _userProfileState.value = userProfileState.value.copy(
+            updateProfilePictureResponse = chatUseCases.addImageUseCase(userUID, imageUri)
+        )
+
+        when(val updateResponse = _userProfileState.value.updateProfilePictureResponse) {
+            is Resource.Success -> {
+                Log.i("TAG", "Update Photo Successful")
+                val imageUrl = updateResponse.result
+                _userProfileState.value = userProfileState.value.copy(
+                    profilePictureUrl = imageUrl.toString()
+                )
+            }
+            is Resource.Error -> {
+                Log.i("TAG", "Update Photo Error")
+                val errorMessage = updateResponse.message
+                _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+            }
+            else -> {
+                Log.i("TAG", "Loading...")
+            }
         }
-        else if(wasPasswordChanged) {
-            val password = _userProfileState.value.password
-            updateUserPassword(password)
+        updateUserProfileInfo()
+    }
+
+    suspend fun updateUserProfileInfo() {
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = Resource.Loading
+        )
+
+        val user = User(
+            userUID = _userProfileState.value.currentUserUID,
+            firstName = _userProfileState.value.firstName,
+            lastName = _userProfileState.value.lastName,
+            profilePictureUrl = _userProfileState.value.profilePictureUrl
+        )
+
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = chatUseCases.updateUserInfoUseCase(user)
+        )
+
+        when(val updateResponse = _userProfileState.value.updateUserResponse) {
+            is Resource.Success -> {
+                Log.i("TAG", "Update Info Successful")
+            }
+            is Resource.Error -> {
+                Log.i("TAG", "Update Info Error")
+                val errorMessage = updateResponse.message
+                _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+            }
+            else -> {
+                Log.i("TAG", "Loading...")
+            }
+        }
+    }
+
+    suspend fun updateUserEmail(email: String) {
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = Resource.Loading
+        )
+
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = chatUseCases.updateUserEmailUseCase(email)
+        )
+
+        when(val updateResponse = _userProfileState.value.updateUserResponse) {
+            is Resource.Success -> {
+                Log.i("TAG", "Update Email Successful")
+            }
+            is Resource.Error -> {
+                Log.i("TAG", "Update Email Error")
+                val errorMessage = updateResponse.message
+                _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+            }
+            else -> {
+                Log.i("TAG", "Loading...")
+            }
+        }
+    }
+
+    suspend fun updateUserPassword(password: String) {
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = Resource.Loading
+        )
+
+        _userProfileState.value = userProfileState.value.copy(
+            updateUserResponse = chatUseCases.updateUserPasswordUseCase(password)
+        )
+
+        when(val updateResponse = _userProfileState.value.updateUserResponse) {
+            is Resource.Success -> {
+                Log.i("TAG", "Update Password Successful")
+            }
+            is Resource.Error -> {
+                Log.i("TAG", "Update Password Error")
+                val errorMessage = updateResponse.message
+                _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
+            }
+            else -> {
+                Log.i("TAG", "Loading...")
+            }
+        }
+    }
+
+    fun isValidationSuccessful(): Boolean {
+        val firstName = _userProfileState.value.firstName
+        val lastName = _userProfileState.value.lastName
+        val email = _userProfileState.value.email
+        val password = _userProfileState.value.password
+        val confirmPassword = _userProfileState.value.confirmPassword
+        val wasPasswordChanged = _userProfileState.value.isEditPasswordVisible
+
+        return if(wasPasswordChanged) {
+            isNameAndEmailValidationSuccessful(firstName, lastName, email) &&
+                    isPasswordValidationSuccessful(password, confirmPassword)
         }
         else {
-            val user = User(
-                userUID = _userProfileState.value.currentUserUID,
-                firstName = _userProfileState.value.firstName,
-                lastName = _userProfileState.value.lastName,
-                profilePictureUrl = _userProfileState.value.profilePictureUrl
-            )
-            updateUserProfileInfo(user)
-        }
-        Log.i("TAG","Profile Updated")
-    }
-
-    fun updateProfilePicture(userUID: String, imageUri: Uri) {
-        viewModelScope.launch {
-            _userProfileState.value = userProfileState.value.copy(
-                updateProfilePictureResponse = Resource.Loading
-            )
-
-            _userProfileState.value = userProfileState.value.copy(
-                updateProfilePictureResponse = chatUseCases.addImageUseCase(userUID, imageUri)
-            )
-
-            when(val updateResponse = _userProfileState.value.updateProfilePictureResponse) {
-                is Resource.Success -> {
-                    Log.i("TAG", "Update Successful")
-                    val imageUrl = updateResponse.result
-                    _userProfileState.value = userProfileState.value.copy(
-                        profilePictureUrl = imageUrl.toString()
-                    )
-                }
-                is Resource.Error -> {
-                    Log.i("TAG", "Update Error")
-                    val errorMessage = updateResponse.message
-                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
-                }
-                else -> {
-                    Log.i("TAG", "Loading...")
-                }
-            }
-
-            val user = User(
-                userUID = _userProfileState.value.currentUserUID,
-                firstName = _userProfileState.value.firstName,
-                lastName = _userProfileState.value.lastName,
-                profilePictureUrl = _userProfileState.value.profilePictureUrl
-            )
-            updateUserProfileInfo(user)
+            isNameAndEmailValidationSuccessful(firstName, lastName, email)
         }
     }
 
-    fun updateUserProfileInfo(user: User) {
-        viewModelScope.launch {
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = Resource.Loading
-            )
 
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = chatUseCases.updateUserInfoUseCase(user)
-            )
-
-            when(val updateResponse = _userProfileState.value.updateUserResponse) {
-                is Resource.Success -> {
-                    Log.i("TAG", "Update Successful")
-                    _eventFlow.emit(UserProfileUiEvent.Save)
-                }
-                is Resource.Error -> {
-                    val errorMessage = updateResponse.message
-                    Log.i("TAG", "Update Error")
-                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
-                }
-                else -> {
-                    Log.i("TAG", "Loading...")
-                }
-            }
-        }
-    }
-
-    fun updateUserEmail(email: String) {
-        viewModelScope.launch {
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = Resource.Loading
-            )
-
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = chatUseCases.updateUserEmailUseCase(email)
-            )
-
-            when(val updateResponse = _userProfileState.value.updateUserResponse) {
-                is Resource.Success -> {
-                    Log.i("TAG", "Update Successful")
-                    _eventFlow.emit(UserProfileUiEvent.Save)
-                }
-                is Resource.Error -> {
-                    val errorMessage = updateResponse.message
-                    Log.i("TAG", "Update Error")
-                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
-                }
-                else -> {
-                    Log.i("TAG", "Loading...")
-                }
-            }
-        }
-    }
-
-    fun updateUserPassword(password: String) {
-        viewModelScope.launch {
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = Resource.Loading
-            )
-
-            _userProfileState.value = userProfileState.value.copy(
-                updateUserResponse = chatUseCases.updateUserPasswordUseCase(password)
-            )
-
-            when(val updateResponse = _userProfileState.value.updateUserResponse) {
-                is Resource.Success -> {
-                    Log.i("TAG", "Update Successful")
-                    _eventFlow.emit(UserProfileUiEvent.Save)
-                }
-                is Resource.Error -> {
-                    val errorMessage = updateResponse.message
-                    Log.i("TAG", "Update Error")
-                    _eventFlow.emit(UserProfileUiEvent.ShowErrorMessage(errorMessage))
-                }
-                else -> {
-                    Log.i("TAG", "Loading...")
-                }
-            }
-        }
-    }
-
-    fun isValidationSuccessful(
-        firstName: String,
-        lastName: String,
-        email: String,
-        password: String,
-        confirmPassword: String
-    ): Boolean {
+    fun isNameAndEmailValidationSuccessful(firstName: String, lastName: String, email: String, ): Boolean {
         val firstNameValidationResult = chatUseCases.validateNameUseCase(firstName)
         val lastNameValidationResult = chatUseCases.validateNameUseCase(lastName)
         val emailValidationResult = chatUseCases.validateEmailUseCase(email)
-        val passwordValidationResult = chatUseCases.validateSignupPasswordUseCase(password)
-        val confirmPasswordValidationResult = chatUseCases.validateConfirmPasswordUseCase(password, confirmPassword)
 
         val hasError = listOf(
             firstNameValidationResult,
             lastNameValidationResult,
-            emailValidationResult,
-            passwordValidationResult,
-            confirmPasswordValidationResult
+            emailValidationResult
         ).any { !it.isSuccessful }
 
         if(hasError) {
             _userProfileState.value = userProfileState.value.copy(
                 firstNameError = firstNameValidationResult.errorMessage,
                 lastNameError = lastNameValidationResult.errorMessage,
-                emailError = emailValidationResult.errorMessage,
+                emailError = emailValidationResult.errorMessage
+            )
+            return false
+        }
+        return true
+    }
+
+    fun isPasswordValidationSuccessful(password: String, confirmPassword: String): Boolean {
+        val passwordValidationResult = chatUseCases.validateSignupPasswordUseCase(password)
+        val confirmPasswordValidationResult = chatUseCases.validateConfirmPasswordUseCase(password, confirmPassword)
+
+        val hasError = listOf(
+            passwordValidationResult,
+            confirmPasswordValidationResult
+        ).any { !it.isSuccessful }
+
+        if(hasError) {
+            _userProfileState.value = userProfileState.value.copy(
                 passwordError = passwordValidationResult.errorMessage,
                 confirmPasswordError = confirmPasswordValidationResult.errorMessage
             )

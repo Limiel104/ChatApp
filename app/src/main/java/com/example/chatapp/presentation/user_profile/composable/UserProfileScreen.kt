@@ -119,11 +119,6 @@ fun UserProfileScreen(
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
                 )
             }
-            else if(wasProfilePictureChanged) {
-                EditProfilePictureSection(
-                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
-                )
-            }
             else if(isEditEmailVisible) {
                 EditEmailSection(
                     email = email,
@@ -140,6 +135,11 @@ fun UserProfileScreen(
                     confirmPasswordError = confirmPasswordError,
                     onPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredPassword(it)) },
                     onConfirmPasswordValueChange = { viewModel.onEvent(UserProfileEvent.EnteredConfirmPassword(it)) },
+                    onClick = { viewModel.onEvent(UserProfileEvent.Save) }
+                )
+            }
+            else if(wasProfilePictureChanged) {
+                EditProfilePictureSection(
                     onClick = { viewModel.onEvent(UserProfileEvent.Save) }
                 )
             }
