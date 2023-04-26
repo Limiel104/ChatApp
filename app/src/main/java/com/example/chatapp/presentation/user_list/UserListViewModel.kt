@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.chatapp.domain.model.Message
 import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Resource
@@ -34,8 +35,11 @@ class UserListViewModel @Inject constructor(
         _userListState.value = userListState.value.copy(
             currentUserUID = chatUseCases.getCurrentUserUseCase()!!.uid
         )
-        getUsers(_userListState.value.currentUserUID)
+
+        val currentUserUID = _userListState.value.currentUserUID
+        getUsers(currentUserUID)
         getCurrentUserProfilePictureUrl(_userListState.value.currentUserUID)
+        getAllUserMessages(currentUserUID)
     }
 
     fun onEvent(event: UserListEvent) {
@@ -62,7 +66,7 @@ class UserListViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             chatUseCases.getUsersUseCase(currentUserUID).collect { response ->
-                when (response) {
+                when(response) {
                     is Resource.Success -> {
                         if(query != emptyString) {
                             _userListState.value = userListState.value.copy(
@@ -74,7 +78,6 @@ class UserListViewModel @Inject constructor(
                                 userList = response.result
                             )
                         }
-
                     }
                     is Resource.Loading -> {}
                     is Resource.Error -> {
@@ -101,6 +104,31 @@ class UserListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getAllUserMessages(currentUserUID: String) {
+        viewModelScope.launch {
+            chatUseCases.getAllUserMessagesUseCase(currentUserUID).collect { response ->
+                when(response) {
+                    is Resource.Success -> {
+                        val messages = response.result
+                        Log.i("TAG",messages.toString())
+                        getLastMessages(messages, currentUserUID)
+                    }
+                    is Resource.Loading -> {}
+                    is Resource.Error -> {
+                        Log.i("TAG",response.message)
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLastMessages(allMessages: List<Message>, currentUserUID: String) {
+        val lastMessages =  chatUseCases.getLastMessagesUseCase(allMessages, currentUserUID)
+        _userListState.value = userListState.value.copy(
+            lastMessages = lastMessages
+        )
     }
 
     fun logout() {

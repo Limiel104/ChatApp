@@ -76,6 +76,8 @@ object AppModule {
             filterUsersUseCase = FilterUsersUseCase(),
             addMessageUseCase = AddMessageUseCase(messageStorageRepository),
             getMessagesUseCase = GetMessagesUseCase(messageStorageRepository),
+            getAllUserMessagesUseCase = GetAllUserMessagesUseCase(messageStorageRepository),
+            getLastMessagesUseCase = GetLastMessagesUseCase(),
             deleteMessageUseCase = DeleteMessageUseCase(messageStorageRepository),
             addImageUseCase = AddImageUseCase(imageStorageRepository),
             updateUserInfoUseCase = UpdateUserInfoUseCase(userStorageRepository),

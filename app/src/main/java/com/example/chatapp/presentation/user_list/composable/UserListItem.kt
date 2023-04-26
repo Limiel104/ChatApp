@@ -24,6 +24,8 @@ import com.example.chatapp.util.Constants.userUIDCorrect
 @Composable
 fun UserListItem(
     user: User,
+    message: String,
+    date: String,
     onItemClick: () -> Unit
 ) {
     Row(
@@ -59,7 +61,7 @@ fun UserListItem(
                 )
 
                 Text(
-                    text = "18 Apr",
+                    text = date,
                     fontWeight = FontWeight.Light,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
@@ -70,7 +72,7 @@ fun UserListItem(
             }
 
             Text(
-                text = "Last message dsfuidsgifusgfuisdgiusgfuisdgfsidugfsiudgfisudgisugfisudgfsiugfis",
+                text = message,
                 fontWeight = FontWeight.Light,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
@@ -92,6 +94,14 @@ fun UserListItemPreview() {
             profilePictureUrl = emptyString
         )
 
-        UserListItem(user = user,{})
+        val message = "Last message that was send in this chat"
+        val date = "25 April"
+
+        UserListItem(
+            user = user,
+            message = message,
+            date = date,
+            onItemClick = {}
+        )
     }
 }

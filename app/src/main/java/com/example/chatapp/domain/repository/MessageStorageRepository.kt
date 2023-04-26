@@ -10,5 +10,7 @@ interface MessageStorageRepository {
 
     fun getMessages(currentUserUID: String, chatParticipantUserUID: String): Flow<Resource<List<Message>>>
 
+    fun geAllUserMessages(currentUserUID: String): Flow<Resource<List<Message>>>
+
     suspend fun deleteMessage(messageId: String): Resource<Boolean>
 }
