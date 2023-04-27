@@ -20,6 +20,7 @@ import com.example.chatapp.presentation.user_list.UserListViewModel
 import com.example.chatapp.util.Constants.emptyString
 import com.example.chatapp.util.Screen
 import kotlinx.coroutines.flow.collectLatest
+import java.text.DateFormat
 
 @Composable
 fun UserListScreen(
@@ -75,9 +76,8 @@ fun UserListScreen(
                     else {
                         emptyString
                     }
-
                     val date = if(lastMessages[user.userUID] != null) {
-                        lastMessages[user.userUID]!!.date.toString()
+                        DateFormat.getDateInstance(DateFormat.MONTH_FIELD).format(lastMessages[user.userUID]!!.date)
                     }
                     else {
                         emptyString
