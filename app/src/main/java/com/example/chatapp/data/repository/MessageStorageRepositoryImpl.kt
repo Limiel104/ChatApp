@@ -7,6 +7,7 @@ import com.example.chatapp.util.Constants.RECEIVER_UID
 import com.example.chatapp.util.Constants.SENDER_UID
 import com.example.chatapp.util.Resource
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -42,6 +43,31 @@ class MessageStorageRepositoryImpl @Inject constructor(
         val snapshotListener = messagesRef
             .whereIn(SENDER_UID, listOf(currentUserUID,chatParticipantUserUID))
             .whereIn(RECEIVER_UID, listOf(currentUserUID,chatParticipantUserUID))
+            .orderBy(DATE,Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, e ->
+                val response = if (snapshot != null) {
+                    val messages = snapshot.toObjects(Message::class.java)
+                    Resource.Success(messages)
+                }
+                else {
+                    Resource.Error(e!!.localizedMessage as String)
+                }
+                trySend(response)
+            }
+
+        awaitClose {
+            snapshotListener.remove()
+        }
+    }
+
+    override fun geAllUserMessages(currentUserUID: String) = callbackFlow {
+        val snapshotListener = messagesRef
+            .where(
+                Filter.or(
+                    Filter.equalTo(SENDER_UID, currentUserUID),
+                    Filter.equalTo(RECEIVER_UID, currentUserUID)
+                )
+            )
             .orderBy(DATE,Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, e ->
                 val response = if (snapshot != null) {
