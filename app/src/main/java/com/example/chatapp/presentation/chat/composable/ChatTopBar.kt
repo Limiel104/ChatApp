@@ -11,8 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatapp.presentation.common.composable.ProfilePicture
+import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Constants.GoBack
 
 @Composable
@@ -50,6 +52,18 @@ fun ChatTopBar(
             fontWeight = FontWeight.SemiBold,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ChatTopBar() {
+    ChatAppTheme() {
+        ChatTopBar(
+            name = "John Smith",
+            profilePictureUrl = "url",
+            onClick = {}
         )
     }
 }

@@ -8,11 +8,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatapp.R
 import androidx.compose.ui.window.Dialog
 import com.example.chatapp.presentation.common.composable.DialogButton
+import com.example.chatapp.ui.theme.ChatAppTheme
 
 @Composable
 fun DeleteDialog(
@@ -65,5 +67,16 @@ fun DeleteDialog(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun DeleteDialogPreview() {
+    ChatAppTheme() {
+        DeleteDialog(
+            onDelete = {},
+            onDismiss = {}
+        )
     }
 }

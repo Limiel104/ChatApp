@@ -9,7 +9,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chatapp.ui.theme.ChatAppTheme
 
 @Composable
 fun DialogButton(
@@ -27,6 +29,17 @@ fun DialogButton(
             color = Color.Black,
             modifier = Modifier
                 .padding(7.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun DialogButtonPreview() {
+    ChatAppTheme() {
+        DialogButton(
+            text = "Text",
+            onClick = {}
         )
     }
 }

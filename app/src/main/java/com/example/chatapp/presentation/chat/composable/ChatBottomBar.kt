@@ -1,11 +1,9 @@
 package com.example.chatapp.presentation.chat.composable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -19,7 +17,9 @@ import androidx.compose.ui.draw.clip
 import com.example.chatapp.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chatapp.ui.theme.ChatAppTheme
 
 @Composable
 fun ChatBottomBar(
@@ -30,30 +30,42 @@ fun ChatBottomBar(
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
     ) {
         OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth(),
             value = message,
+            shape = RoundedCornerShape(30.dp),
+            trailingIcon = {
+                IconButton(
+                    onClick = { onClick() },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(Color.LightGray)
+                        .size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Send,
+                        contentDescription = "Send message"
+                    )
+                }
+            },
             placeholder = { Text(stringResource(id = R.string.message_placeholder)) },
-            onValueChange = { onValueChange(it) },
-            modifier = Modifier
-                .weight(5f)
+            onValueChange = { onValueChange(it) }
         )
+    }
+}
 
-        Spacer(modifier = Modifier.width(10.dp))
-
-        IconButton(
-            onClick = { onClick() },
-            modifier = Modifier
-                .weight(1f)
-                .clip(CircleShape)
-                .background(Color.LightGray)
-
-        ) {
-            Icon(
-                imageVector = Icons.Default.Send,
-                contentDescription = "Send message"
-            )
-        }
+@Preview
+@Composable
+fun ChatBottomBarPreview() {
+    ChatAppTheme() {
+        ChatBottomBar(
+            message = "",
+            onValueChange = {},
+            onClick = {}
+        )
     }
 }
