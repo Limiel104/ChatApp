@@ -1,5 +1,6 @@
 package com.example.chatapp.presentation.user_list.composable
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -11,10 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.chatapp.R
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatapp.presentation.common.composable.ProfilePicture
+import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Constants.Logout
 import com.example.chatapp.util.Constants.Search
 
@@ -29,6 +32,7 @@ fun UserListTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colors.background)
             .padding(vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -75,5 +79,19 @@ fun UserListTopBar(
                 contentDescription = Logout
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun UserListTopBarPreview() {
+    ChatAppTheme() {
+        UserListTopBar(
+            query = "",
+            profilePictureUrl = "",
+            onValueChange = {},
+            onClick = {},
+            onImageClick = {}
+        )
     }
 }

@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.example.chatapp.presentation.common.composable.ProfilePicture
 import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Constants.GoBack
+import com.example.chatapp.util.Constants.firstNameCorrect
+import com.example.chatapp.util.Constants.lastNameCorrect
 
 @Composable
 fun ChatTopBar(
@@ -61,7 +63,7 @@ fun ChatTopBar(
 fun ChatTopBar() {
     ChatAppTheme() {
         ChatTopBar(
-            name = "John Smith",
+            name = "$firstNameCorrect $lastNameCorrect",
             profilePictureUrl = "url",
             onClick = {}
         )

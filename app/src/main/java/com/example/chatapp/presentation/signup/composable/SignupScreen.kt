@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -53,7 +52,6 @@ fun SignupScreen(
     navController: NavController,
     viewModel: SignupViewModel = hiltViewModel()
 ) {
-
     val email = viewModel.signupState.value.email
     val emailError = viewModel.signupState.value.emailError
     val password = viewModel.signupState.value.password
@@ -103,7 +101,7 @@ fun SignupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colors.background)
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
@@ -111,6 +109,7 @@ fun SignupScreen(
         Text(
             text = stringResource(id = R.string.create_an_account),
             fontSize = 32.sp,
+            color = MaterialTheme.colors.secondary,
             fontWeight = FontWeight.SemiBold
         )
 
@@ -233,12 +232,12 @@ fun SignupScreen(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color.Black),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
                 onClick = { galleryLauncher.launch(DEVICE_IMAGES) }
             ) {
                 Text(
                     text = stringResource(id = R.string.choose_picture),
-                    color = Color.White,
+                    color = MaterialTheme.colors.onSecondary,
                     modifier = Modifier.padding(7.dp)
                 )
             }
@@ -248,12 +247,12 @@ fun SignupScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .testTag(SIGNUP_BUTTON),
-            colors = ButtonDefaults.buttonColors(Color.Black),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
             onClick = { viewModel.onEvent(SignupEvent.Signup) }
         ) {
             Text(
                 text = stringResource(id = R.string.signup),
-                color = Color.White,
+                color = MaterialTheme.colors.onSecondary,
                 modifier = Modifier.padding(7.dp)
             )
         }
