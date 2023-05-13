@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +33,7 @@ fun ProfilePicture(
                 .clip(shape = CircleShape)
                 .clickable { onClick() },
             shape = CircleShape,
-            backgroundColor = Color.LightGray
+            backgroundColor = MaterialTheme.colors.onPrimary
         ) {
             AsyncImage(
                 model = ImageRequest
@@ -53,7 +53,7 @@ fun ProfilePicture(
             modifier = Modifier
                 .size(size.dp),
             shape = RoundedCornerShape(size.dp),
-            backgroundColor = Color.LightGray
+            backgroundColor = MaterialTheme.colors.onPrimary
         ) {
             AsyncImage(
                 model = ImageRequest
