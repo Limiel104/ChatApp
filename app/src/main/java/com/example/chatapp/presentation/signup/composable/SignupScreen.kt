@@ -27,9 +27,11 @@ import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
+import com.example.chatapp.presentation.common.composable.ChatButton
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.presentation.signup.SignupEvent
 import com.example.chatapp.presentation.signup.SignupUiEvent
+import com.example.chatapp.util.Constants.CHOOSE_PROFILE_PICTURE_BUTTON
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
@@ -86,13 +88,13 @@ fun SignupScreen(
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
                 is SignupUiEvent.Signup -> {
-                    Log.i("TAG","Signup successfully")
+                    Log.i("TAG", "Signup successfully")
                     navController.navigate(Screen.UserListScreen.route) {
                         popUpTo(Screen.LoginScreen.route) { inclusive = true }
                     }
                 }
                 is SignupUiEvent.ShowErrorMessage -> {
-                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -113,8 +115,7 @@ fun SignupScreen(
             fontWeight = FontWeight.SemiBold
         )
 
-        Column(
-        ) {
+        Column() {
             OutlinedTextField(
                 value = email,
                 singleLine = true,
@@ -229,31 +230,18 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
+            ChatButton(
+                text = stringResource(id = R.string.choose_picture),
+                testTag = CHOOSE_PROFILE_PICTURE_BUTTON,
                 onClick = { galleryLauncher.launch(DEVICE_IMAGES) }
-            ) {
-                Text(
-                    text = stringResource(id = R.string.choose_picture),
-                    color = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier.padding(7.dp)
-                )
-            }
-        }
+            )
 
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(SIGNUP_BUTTON),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
-            onClick = { viewModel.onEvent(SignupEvent.Signup) }
-        ) {
-            Text(
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ChatButton(
                 text = stringResource(id = R.string.signup),
-                color = MaterialTheme.colors.onSecondary,
-                modifier = Modifier.padding(7.dp)
+                testTag = SIGNUP_BUTTON,
+                onClick = { viewModel.onEvent(SignupEvent.Signup) }
             )
         }
     }

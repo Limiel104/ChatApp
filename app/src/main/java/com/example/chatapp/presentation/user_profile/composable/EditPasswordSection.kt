@@ -12,9 +12,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatapp.R
+import com.example.chatapp.presentation.common.composable.ChatButton
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Constants
+import com.example.chatapp.util.Constants.EDIT_PASSWORD_SAVE_BUTTON
 import com.example.chatapp.util.Constants.confirmPasswordCorrect
 import com.example.chatapp.util.Constants.passwordCorrect
 
@@ -80,18 +82,11 @@ fun EditPasswordSection(
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
+        ChatButton(
+            text = stringResource(id = R.string.save),
+            testTag = EDIT_PASSWORD_SAVE_BUTTON,
             onClick = { onClick() }
-        ) {
-            Text(
-                text = stringResource(id = R.string.save),
-                color = MaterialTheme.colors.onSecondary,
-                modifier = Modifier.padding(7.dp)
-            )
-        }
+        )
     }
 }
 

@@ -15,6 +15,8 @@ import com.example.chatapp.R
 import androidx.compose.ui.window.Dialog
 import com.example.chatapp.presentation.common.composable.DialogButton
 import com.example.chatapp.ui.theme.ChatAppTheme
+import com.example.chatapp.util.Constants.DIALOG_DELETE_BUTTON
+import com.example.chatapp.util.Constants.DIALOG_DISMISS_BUTTON
 
 @Composable
 fun DeleteDialog(
@@ -57,11 +59,13 @@ fun DeleteDialog(
                 ) {
                     DialogButton(
                         text = stringResource(id = R.string.delete),
+                        testTag = DIALOG_DELETE_BUTTON,
                         onClick = { onDelete() }
                     )
 
                     DialogButton(
                         text = stringResource(id = R.string.dismiss),
+                        testTag = DIALOG_DISMISS_BUTTON,
                         onClick = { onDismiss() }
                     )
                 }

@@ -26,6 +26,7 @@ import com.example.chatapp.presentation.login.LoginUiEvent
 import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
+import com.example.chatapp.presentation.common.composable.ChatButton
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
@@ -129,20 +130,13 @@ fun LoginScreen(
             }
         }
 
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(LOGIN_BUTTON),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
-            onClick = { viewModel.onEvent(LoginEvent.Login) },
-        ) {
-            Text(
-                text = stringResource(id = R.string.login),
-                color = MaterialTheme.colors.onSecondary,
-                modifier = Modifier
-                    .padding(7.dp)
-            )
-        }
+        ChatButton(
+            text = stringResource(id = R.string.login),
+            testTag = LOGIN_BUTTON,
+            onClick = { viewModel.onEvent(LoginEvent.Login) }
+        )
+
+        stringResource(id = R.string.edit_password)
 
         Row(
             modifier = Modifier
