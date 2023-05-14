@@ -2,21 +2,22 @@ package com.example.chatapp.presentation.user_profile.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatapp.R
 import com.example.chatapp.presentation.common.composable.ChatButton
+import com.example.chatapp.presentation.common.composable.ChatTextField
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.ui.theme.ChatAppTheme
-import com.example.chatapp.util.Constants
+import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
+import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
 import com.example.chatapp.util.Constants.EDIT_PASSWORD_SAVE_BUTTON
+import com.example.chatapp.util.Constants.PASSWORD_ERROR_TF
+import com.example.chatapp.util.Constants.PASSWORD_TF
 import com.example.chatapp.util.Constants.confirmPasswordCorrect
 import com.example.chatapp.util.Constants.passwordCorrect
 
@@ -34,49 +35,37 @@ fun EditPasswordSection(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
     ) {
-        OutlinedTextField(
-            value = password,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
+        ChatTextField(
+            text = password,
+            label = stringResource(id = R.string.password),
+            placeholder = stringResource(id = R.string.password),
+            testTag = PASSWORD_TF,
             isError = passwordError != null,
-            label = { Text(stringResource(id = R.string.password)) },
-            placeholder = { Text(stringResource(id = R.string.password)) },
-            onValueChange = { onPasswordValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(Constants.PASSWORD_TF)
+            onValueChange = { onPasswordValueChange(it) }
         )
 
         if(passwordError != null) {
             ErrorTextFieldItem(
                 errorMessage = passwordError,
-                testTag = Constants.PASSWORD_ERROR_TF
+                testTag = PASSWORD_ERROR_TF
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(
-            value = confirmPassword,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            ),
+        ChatTextField(
+            text = confirmPassword,
+            label = stringResource(id = R.string.confirm_password),
+            placeholder = stringResource(id = R.string.confirm_password),
+            testTag = CONFIRM_PASSWORD_TF,
             isError = confirmPasswordError != null,
-            label = { Text(stringResource(id = R.string.confirm_password)) },
-            placeholder = { Text(stringResource(id = R.string.confirm_password)) },
-            onValueChange = { onConfirmPasswordValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(Constants.CONFIRM_PASSWORD_TF)
+            onValueChange = { onConfirmPasswordValueChange(it) }
         )
 
         if(confirmPasswordError != null) {
             ErrorTextFieldItem(
                 errorMessage = confirmPasswordError,
-                testTag = Constants.CONFIRM_PASSWORD_ERROR_TF
+                testTag = CONFIRM_PASSWORD_ERROR_TF
             )
         }
 

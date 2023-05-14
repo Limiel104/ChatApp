@@ -5,16 +5,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.chatapp.R
 import com.example.chatapp.presentation.common.composable.ChatButton
+import com.example.chatapp.presentation.common.composable.ChatTextField
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.ui.theme.ChatAppTheme
-import com.example.chatapp.util.Constants
 import com.example.chatapp.util.Constants.EDIT_PROFILE_INFO_SAVE_BUTTON
+import com.example.chatapp.util.Constants.FIRST_NAME_ERROR_TF
+import com.example.chatapp.util.Constants.FIRST_NAME_TF
+import com.example.chatapp.util.Constants.LAST_NAME_ERROR_TF
+import com.example.chatapp.util.Constants.LAST_NAME_TF
 import com.example.chatapp.util.Constants.firstNameCorrect
 import com.example.chatapp.util.Constants.lastNameCorrect
 
@@ -32,42 +35,37 @@ fun EditProfileInfoSection(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
     ) {
-        OutlinedTextField(
-            value = firstName,
-            singleLine = true,
+        ChatTextField(
+            text = firstName,
+            label = stringResource(id = R.string.first_name),
+            placeholder = stringResource(id = R.string.first_name),
+            testTag = FIRST_NAME_TF,
             isError = firstNameError != null,
-            label = { Text(stringResource(id = R.string.first_name)) },
-            placeholder = { Text(stringResource(id = R.string.first_name)) },
-            onValueChange = { onFirstNameValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(Constants.FIRST_NAME_TF)
+            onValueChange = { onFirstNameValueChange(it) }
         )
 
         if(firstNameError != null) {
             ErrorTextFieldItem(
                 errorMessage = firstNameError,
-                testTag = Constants.FIRST_NAME_ERROR_TF
+                testTag = FIRST_NAME_ERROR_TF
             )
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        OutlinedTextField(
-            value = lastName,
-            singleLine = true,
-            label = { Text(stringResource(id = R.string.last_name)) },
-            placeholder = { Text(stringResource(id = R.string.last_name)) },
-            onValueChange = { onLastNameValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(Constants.LAST_NAME_TF)
+        ChatTextField(
+            text = lastName,
+            label = stringResource(id = R.string.last_name),
+            placeholder = stringResource(id = R.string.last_name),
+            testTag = LAST_NAME_TF,
+            isError = lastNameError != null,
+            onValueChange = { onLastNameValueChange(it) }
         )
 
         if(lastNameError != null) {
             ErrorTextFieldItem(
                 errorMessage = lastNameError,
-                testTag = Constants.LAST_NAME_ERROR_TF
+                testTag = LAST_NAME_ERROR_TF
             )
         }
 

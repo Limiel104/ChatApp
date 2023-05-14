@@ -27,6 +27,7 @@ import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
 import com.example.chatapp.presentation.common.composable.ChatButton
+import com.example.chatapp.presentation.common.composable.ChatTextField
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
@@ -82,19 +83,16 @@ fun LoginScreen(
         )
 
         Column {
-            OutlinedTextField(
-                value = email,
-                singleLine = true,
+            ChatTextField(
+                text = email,
+                label = stringResource(id = R.string.email),
+                placeholder = stringResource(id = R.string.email),
+                testTag = EMAIL_TF,
+                isError = emailError != null,
+                onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
-                ),
-                isError = emailError != null,
-                label = { Text(stringResource(id = R.string.email)) },
-                placeholder = { Text(stringResource(id = R.string.email)) },
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(EMAIL_TF)
+                )
             )
 
             if(emailError != null) {
@@ -106,20 +104,17 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = password,
-                singleLine = true,
+            ChatTextField(
+                text = password,
+                label = stringResource(id = R.string.password),
+                placeholder = stringResource(id = R.string.password),
+                testTag = PASSWORD_TF,
+                isError = passwordError != null,
+                onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
                 ),
-                isError = passwordError != null,
-                visualTransformation = PasswordVisualTransformation(),
-                label = { Text(stringResource(id = R.string.password)) },
-                placeholder = { Text(stringResource(id = R.string.password)) },
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(PASSWORD_TF)
+                visualTransformation = PasswordVisualTransformation()
             )
 
             if(passwordError != null) {
