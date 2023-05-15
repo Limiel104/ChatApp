@@ -1,7 +1,7 @@
 package com.example.chatapp.presentation.common.composable
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
@@ -14,16 +14,16 @@ import androidx.compose.ui.unit.dp
 import com.example.chatapp.ui.theme.ChatAppTheme
 
 @Composable
-fun DialogButton(
+fun ChatButton(
     text: String,
     testTag: String,
     onClick: () -> Unit
 ) {
     OutlinedButton(
         modifier = Modifier
+            .fillMaxWidth()
             .testTag(testTag),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
-        shape = RoundedCornerShape(35.dp),
         onClick = { onClick() }
     ) {
         Text(
@@ -37,9 +37,9 @@ fun DialogButton(
 
 @Preview
 @Composable
-fun DialogButtonPreview() {
-    ChatAppTheme() {
-        DialogButton(
+fun ButtonPreview() {
+    ChatAppTheme {
+        ChatButton(
             text = "Text",
             testTag = "testTag",
             onClick = {}

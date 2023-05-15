@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -27,6 +26,8 @@ import com.example.chatapp.presentation.login.LoginUiEvent
 import com.example.chatapp.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.chatapp.R
+import com.example.chatapp.presentation.common.composable.ChatButton
+import com.example.chatapp.presentation.common.composable.ChatTextField
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.EMAIL_ERROR_TF
@@ -69,31 +70,29 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colors.background)
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = stringResource(id = R.string.welcome_message),
+            color = MaterialTheme.colors.secondary,
             fontSize = 32.sp,
             fontWeight = FontWeight.SemiBold
         )
 
         Column {
-            OutlinedTextField(
-                value = email,
-                singleLine = true,
+            ChatTextField(
+                text = email,
+                label = stringResource(id = R.string.email),
+                placeholder = stringResource(id = R.string.email),
+                testTag = EMAIL_TF,
+                isError = emailError != null,
+                onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
-                ),
-                isError = emailError != null,
-                label = { Text(stringResource(id = R.string.email)) },
-                placeholder = { Text(stringResource(id = R.string.email)) },
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredEmail(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(EMAIL_TF)
+                )
             )
 
             if(emailError != null) {
@@ -105,20 +104,17 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = password,
-                singleLine = true,
+            ChatTextField(
+                text = password,
+                label = stringResource(id = R.string.password),
+                placeholder = stringResource(id = R.string.password),
+                testTag = PASSWORD_TF,
+                isError = passwordError != null,
+                onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
                 ),
-                isError = passwordError != null,
-                visualTransformation = PasswordVisualTransformation(),
-                label = { Text(stringResource(id = R.string.password)) },
-                placeholder = { Text(stringResource(id = R.string.password)) },
-                onValueChange = { viewModel.onEvent(LoginEvent.EnteredPassword(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(PASSWORD_TF)
+                visualTransformation = PasswordVisualTransformation()
             )
 
             if(passwordError != null) {
@@ -129,19 +125,13 @@ fun LoginScreen(
             }
         }
 
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(LOGIN_BUTTON),
-            colors = ButtonDefaults.buttonColors(Color.Black),
-            onClick = { viewModel.onEvent(LoginEvent.Login) },
-        ) {
-            Text(
-                text = stringResource(id = R.string.login),
-                color = Color.White,
-                modifier = Modifier.padding(7.dp)
-            )
-        }
+        ChatButton(
+            text = stringResource(id = R.string.login),
+            testTag = LOGIN_BUTTON,
+            onClick = { viewModel.onEvent(LoginEvent.Login) }
+        )
+
+        stringResource(id = R.string.edit_password)
 
         Row(
             modifier = Modifier
@@ -156,12 +146,10 @@ fun LoginScreen(
 
             Text(
                 text = stringResource(id = R.string.signup),
-                color = Color.Blue,
+                color = MaterialTheme.colors.primary,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
-                    .clickable {
-                        navController.navigate(Screen.SignupScreen.route)
-                    }
+                    .clickable { navController.navigate(Screen.SignupScreen.route) }
                     .testTag(SIGNUP_TF)
             )
         }

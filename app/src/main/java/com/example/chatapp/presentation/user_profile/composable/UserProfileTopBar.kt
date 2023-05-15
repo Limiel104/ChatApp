@@ -8,7 +8,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.chatapp.ui.theme.ChatAppTheme
 import com.example.chatapp.util.Constants
 
 @Composable
@@ -30,5 +32,15 @@ fun UserProfileTopBar(
                 contentDescription = Constants.GoBack
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun UserProfileTopBar() {
+    ChatAppTheme() {
+        UserProfileTopBar(
+            onClick = {}
+        )
     }
 }

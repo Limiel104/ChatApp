@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -28,9 +27,12 @@ import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.example.chatapp.presentation.signup.SignupViewModel
 import com.example.chatapp.R
+import com.example.chatapp.presentation.common.composable.ChatButton
+import com.example.chatapp.presentation.common.composable.ChatTextField
 import com.example.chatapp.presentation.common.composable.ErrorTextFieldItem
 import com.example.chatapp.presentation.signup.SignupEvent
 import com.example.chatapp.presentation.signup.SignupUiEvent
+import com.example.chatapp.util.Constants.CHOOSE_PROFILE_PICTURE_BUTTON
 import com.example.chatapp.util.Constants.CIRCULAR_INDICATOR
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_ERROR_TF
 import com.example.chatapp.util.Constants.CONFIRM_PASSWORD_TF
@@ -53,7 +55,6 @@ fun SignupScreen(
     navController: NavController,
     viewModel: SignupViewModel = hiltViewModel()
 ) {
-
     val email = viewModel.signupState.value.email
     val emailError = viewModel.signupState.value.emailError
     val password = viewModel.signupState.value.password
@@ -88,13 +89,13 @@ fun SignupScreen(
         viewModel.eventFlow.collectLatest { event ->
             when(event) {
                 is SignupUiEvent.Signup -> {
-                    Log.i("TAG","Signup successfully")
+                    Log.i("TAG", "Signup successfully")
                     navController.navigate(Screen.UserListScreen.route) {
                         popUpTo(Screen.LoginScreen.route) { inclusive = true }
                     }
                 }
                 is SignupUiEvent.ShowErrorMessage -> {
-                    Toast.makeText(context,event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -103,7 +104,7 @@ fun SignupScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colors.background)
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
@@ -111,24 +112,21 @@ fun SignupScreen(
         Text(
             text = stringResource(id = R.string.create_an_account),
             fontSize = 32.sp,
+            color = MaterialTheme.colors.secondary,
             fontWeight = FontWeight.SemiBold
         )
 
-        Column(
-        ) {
-            OutlinedTextField(
-                value = email,
-                singleLine = true,
+        Column() {
+            ChatTextField(
+                text = email,
+                label = stringResource(id = R.string.email),
+                placeholder = stringResource(id = R.string.email),
+                testTag = EMAIL_TF,
+                isError = emailError != null,
+                onValueChange = { viewModel.onEvent(SignupEvent.EnteredEmail(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
-                ),
-                isError = emailError != null,
-                label = { Text(stringResource(id = R.string.email)) },
-                placeholder = { Text(stringResource(id = R.string.email)) },
-                onValueChange = { viewModel.onEvent(SignupEvent.EnteredEmail(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(EMAIL_TF)
+                )
             )
 
             if(emailError != null) {
@@ -140,19 +138,16 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = password,
-                singleLine = true,
+            ChatTextField(
+                text = password,
+                label = stringResource(id = R.string.password),
+                placeholder = stringResource(id = R.string.password),
+                testTag = PASSWORD_TF,
+                isError = passwordError != null,
+                onValueChange = { viewModel.onEvent(SignupEvent.EnteredPassword(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
-                ),
-                isError = passwordError != null,
-                label = { Text(stringResource(id = R.string.password)) },
-                placeholder = { Text(stringResource(id = R.string.password)) },
-                onValueChange = { viewModel.onEvent(SignupEvent.EnteredPassword(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(PASSWORD_TF)
+                )
             )
 
             if(passwordError != null) {
@@ -164,19 +159,16 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = confirmPassword,
-                singleLine = true,
+            ChatTextField(
+                text = confirmPassword,
+                label = stringResource(id = R.string.confirm_password),
+                placeholder = stringResource(id = R.string.confirm_password),
+                testTag = CONFIRM_PASSWORD_TF,
+                isError = confirmPasswordError != null,
+                onValueChange = { viewModel.onEvent(SignupEvent.EnteredConfirmPassword(it)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
-                ),
-                isError = confirmPasswordError != null,
-                label = { Text(stringResource(id = R.string.confirm_password)) },
-                placeholder = { Text(stringResource(id = R.string.confirm_password)) },
-                onValueChange = { viewModel.onEvent(SignupEvent.EnteredConfirmPassword(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(CONFIRM_PASSWORD_TF)
+                )
             )
 
             if(confirmPasswordError != null) {
@@ -188,16 +180,13 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = firstName,
-                singleLine = true,
+            ChatTextField(
+                text = firstName,
+                label = stringResource(id = R.string.first_name),
+                placeholder = stringResource(id = R.string.first_name),
+                testTag = FIRST_NAME_TF,
                 isError = firstNameError != null,
-                label = { Text(stringResource(id = R.string.first_name)) },
-                placeholder = { Text(stringResource(id = R.string.first_name)) },
-                onValueChange = { viewModel.onEvent(SignupEvent.EnteredFirstName(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(FIRST_NAME_TF)
+                onValueChange = { viewModel.onEvent(SignupEvent.EnteredFirstName(it)) }
             )
 
             if(firstNameError != null) {
@@ -209,16 +198,13 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedTextField(
-                value = lastName,
-                singleLine = true,
+            ChatTextField(
+                text = lastName,
+                label = stringResource(id = R.string.last_name),
+                placeholder = stringResource(id = R.string.last_name),
+                testTag = LAST_NAME_TF,
                 isError = lastNameError != null,
-                label = { Text(stringResource(id = R.string.last_name)) },
-                placeholder = { Text(stringResource(id = R.string.last_name)) },
-                onValueChange = { viewModel.onEvent(SignupEvent.EnteredLastName(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag(LAST_NAME_TF)
+                onValueChange = { viewModel.onEvent(SignupEvent.EnteredLastName(it)) }
             )
 
             if(lastNameError != null) {
@@ -230,31 +216,18 @@ fun SignupScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            OutlinedButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(Color.Black),
+            ChatButton(
+                text = stringResource(id = R.string.choose_picture),
+                testTag = CHOOSE_PROFILE_PICTURE_BUTTON,
                 onClick = { galleryLauncher.launch(DEVICE_IMAGES) }
-            ) {
-                Text(
-                    text = stringResource(id = R.string.choose_picture),
-                    color = Color.White,
-                    modifier = Modifier.padding(7.dp)
-                )
-            }
-        }
+            )
 
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .testTag(SIGNUP_BUTTON),
-            colors = ButtonDefaults.buttonColors(Color.Black),
-            onClick = { viewModel.onEvent(SignupEvent.Signup) }
-        ) {
-            Text(
+            Spacer(modifier = Modifier.height(10.dp))
+
+            ChatButton(
                 text = stringResource(id = R.string.signup),
-                color = Color.White,
-                modifier = Modifier.padding(7.dp)
+                testTag = SIGNUP_BUTTON,
+                onClick = { viewModel.onEvent(SignupEvent.Signup) }
             )
         }
     }

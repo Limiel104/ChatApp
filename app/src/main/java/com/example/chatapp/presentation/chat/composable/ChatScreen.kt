@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +18,7 @@ import com.example.chatapp.R
 import com.example.chatapp.presentation.chat.ChatEvent
 import com.example.chatapp.presentation.chat.ChatUiEvent
 import com.example.chatapp.presentation.chat.ChatViewModel
+import com.example.chatapp.util.Constants.emptyString
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -61,12 +61,16 @@ fun ChatScreen(
             ChatBottomBar(
                 message = messageToSend,
                 onValueChange = { viewModel.onEvent(ChatEvent.EnteredMessage(it)) },
-                onClick = { viewModel.onEvent(ChatEvent.SendMessage) }
+                onClick = {
+                    if(messageToSend != emptyString) {
+                        viewModel.onEvent(ChatEvent.SendMessage)
+                    }
+                }
             ) },
         scaffoldState = scaffoldState,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colors.background)
             .padding(10.dp)
     ) { innerPadding ->
         Column(
