@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.domain.use_case.ChatUseCases
 import com.example.chatapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -23,6 +24,14 @@ class LoginViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<LoginUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    init {
+        val currentUser = chatUseCases.getCurrentUserUseCase()
+        val isCurrentUserAlreadyLoggedIn = currentUser != null
+        if(isCurrentUserAlreadyLoggedIn) {
+            navigateToUserList()
+        }
+    }
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -95,5 +104,12 @@ class LoginViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    fun navigateToUserList() {
+        viewModelScope.launch {
+            delay(500L)
+            _eventFlow.emit(LoginUiEvent.Login)
+        }
     }
 }
